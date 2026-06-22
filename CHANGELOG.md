@@ -1,5 +1,23 @@
 # Event Scout — Changelog
 
+## Pass 5 — 2026-06-22 (exhaustive workflow merge: 39 → 54)
+Ran the multi-agent sweep (73 agents, ~1.4M tokens): **82 raw → 65 deduped → 56 verified-and-kept.**
+Merged into the curated set with **token-overlap dedup + a region guard** (so IMN East/West survive but
+re-discovered duplicates of curated events — CREFC, USISPF, PREA, RETCON, AI-in-RE variants — were dropped).
+**+15 net-new, 54 total** (0 out of window; every event keeps its 3-lens `why`). Curated 39 + their ids preserved.
+
+Notable adds:
+- **Sequoia AI Ascent** (T1) — ~150 founders/researchers; highest-signal AI room (access is the game).
+- **TED2027** (T1) — San Diego; first US TED edition in over a decade.
+- **IMN Real Estate Family Office & Private Wealth (West + East)** + **Single Family Office Summit (NYC)** +
+  **Opal Family Office (Newport)** — direct family-office/allocate fit.
+- **LeadingRE / Luxury Portfolio Conference Week** — luxury-RE peers, Isprava-core.
+- **Robin Hood Investors Conf · Forbes Iconoclast · SuperReturn NA · Future Proof (Miami) · Confluence ·
+  Indiaspora US** — capital/diaspora breadth. Inaugural/unverified ones (Confluence, Indiaspora US edition)
+  flagged in their verdicts; not over-sold.
+
+Top 6 shortlist unchanged for now (9 Tier-1 events exist — re-rank on request).
+
 ## Pass 4 — 2026-06-22 (per-event 3-lens "Why it matters")
 Added a `why: {isprava, tech, nds}` brief to **all 39 events** + a color-coded "Why it matters"
 block in each card (Isprava=emerald, Isprava Tech=violet, NDS=gold). Honest "Low/N/A" where a lens
