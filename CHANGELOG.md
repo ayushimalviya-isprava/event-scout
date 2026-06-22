@@ -1,5 +1,24 @@
 # Event Scout — Changelog
 
+## Pass 2 — 2026-06-22 (RE×AI cluster · gated path-ins · LinkedIn/X)
+**LinkedIn & X added as sources** — public-post discovery scoped to `linkedin.com` / `x.com`,
+wired into `keywords.md` (cluster 10) and `PIPELINE_PROMPT.md`. Public posts only (no logged-in
+scraping — ToS/paid-API forbid it); signal is noisy, used as leads then verified on official sites.
+
+**Network-gated path-ins verified → `seed/network-gated.md`:**
+- **TIGER 21** — actionable: ≥$20M investable, India groups now live (Mumbai/Bengaluru chairs named);
+  path = membership inquiry → Dev Director → Chair meeting. The most reachable elite peer room for NDS.
+- **R360** — ≥$100M net worth, ~$180k/3yr, **nomination-only**; target only with a warm referral.
+- **Allen & Co Sun Valley** — no door to buy; long-game via banker/VC relationships.
+
+**RE×AI cluster, no new dated US events to add (honest result):**
+- MetaProp runs **NYC Real Estate Tech Week** ("the Davos of PropTech"); CREtech NY is its official
+  flagship — same week, already tracked. No standalone 2027 date.
+- **NAR iOi Summit** — no current 2026/27 date found (may be paused/folded). Left off until verifiable.
+- Propy / Future PropTech surfaced but are low-signal or non-US (Dubai) — excluded.
+
+No change to events.js this pass (discovery + intel only).
+
 ## Refresh 1 — 2026-06-22
 First pipeline run, against the new objective (real estate × AI/tech + diaspora; allocate + US-expansion; not raising). 29 events; 10 now Confirmed/Likely from a primary source.
 

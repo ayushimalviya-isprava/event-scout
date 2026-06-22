@@ -11,8 +11,11 @@ This runs every 3 days. Be a ruthless filter; default to SKIP. Do the four phase
 - `seed/research-2026-06-22.md` — last verified baseline.
 
 ## Phase 1 — DISCOVER (find new + refresh known)
-- Web-search every keyword cluster in `keywords.md` (open web + publicly-indexed LinkedIn/X
-  posts; you cannot log into or scrape LinkedIn/X). Rotate the query patterns.
+- Web-search every keyword cluster in `keywords.md`. Rotate the query patterns.
+- **LinkedIn & X (cluster 10):** run searches scoped to `linkedin.com` and `x.com` for event
+  announcements, side-event/dinner invites, and "applications open" calls. **Public posts only
+  — no logged-in scraping.** Signal is noisy; treat hits as leads and verify on the official
+  site before listing anything.
 - For each major conference, also search its **side-events / dinners** — often the real value.
 - Build a candidate list: every event already in events.js PLUS anything new that plausibly
   clears the bar. Note where each came from.

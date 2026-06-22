@@ -91,6 +91,19 @@ List the room + the realistic path in; never mark bookable.
 For every major conference above: search its dinners/salons/afterparties — often > the main stage.
 - "<event> side events 2027" · "<event> dinner" · "<event> happy hour" lu.ma / partiful
 
+### 10. LinkedIn & X — public-post discovery  — weight: MED (variable signal)
+Search indexes public LinkedIn/X posts; mine them for event announcements, side-event/dinner
+invites, and "applications open" calls that never hit a normal event site.
+**Public posts only — NO logged-in feed scraping (their ToS / paid API forbid it).** Signal is
+noisy and often non-US; treat hits as leads and verify on the official site before listing.
+- Scope searches to domains `linkedin.com` and `x.com` (use the search tool's domain filter).
+- Patterns: `site:linkedin.com/posts "AI in real estate" 2027` · `site:x.com "founder dinner" <city>`
+  · `site:linkedin.com proptech summit 2027` · `site:x.com "applications open" AI summit 2027`
+  · `site:linkedin.com TiE OR USISPF event 2027`
+- Accounts worth monitoring (they announce events/side-events): proptech VCs (MetaProp,
+  Camber Creek, Fifth Wall), frontier-AI founders & labs, Cerebral Valley / Newcomer,
+  TiE / USISPF handles, major real-estate-tech operators. Add specific handles as found.
+
 ---
 
 ## SEARCH QUERY PATTERNS (rotate these)
