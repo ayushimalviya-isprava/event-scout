@@ -29,11 +29,18 @@ This runs every 3 days. Be a ruthless filter; default to SKIP. Do the four phase
 For each event set:
 - `tier`: 1 (clears the trip alone) / 2 (worth it if already in region) / 3 (monitor). Apply the bar.
 - `conf` (date accuracy): **Confirmed** (official site states it) / **Likely** (strong pattern
-  or secondary source) / **Unconfirmed** (estimated from prior years).
+  or secondary source) / **Predicted** (reliably recurring annual, next edition projected from
+  ≥1 prior year's cadence) / **Unconfirmed** (one-off estimate).
 - `start`, `end` (YYYY-MM-DD; end optional), `tba` (true if only the month is known).
+- `cadence`: human-readable recurrence for recurring events (e.g. "Annual · early May").
 - `city`, `cost`, `access` (Ticketed | Gated: <actual path in>), `url` (official link).
 - `room`: who's actually there — **sourced or "typical profile"; never invented**.
 - `verdict`: one blunt go/skip sentence.
+- `why`: a 3-lens relevance brief `{ isprava, tech, nds }` — one tight clause each:
+  **isprava** (luxury RE business: HNI/NRI buyers, development, capital, US expansion),
+  **tech** (Isprava Tech: AI/proptech tools, vendors, talent, benchmarking),
+  **nds** (personal: peers/learning, allocate/co-invest, UHNW networks, profile).
+  Be specific to the event; say "Low" / "N/A" honestly when a lens doesn't apply.
 - `shortlist`: true only for the current Top 6.
 - Drop events whose edition falls outside Nov 2026 → Nov 2027. Keep gated targets as tier 3
   with the path-in in `access` (don't pretend they're bookable).

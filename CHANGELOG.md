@@ -1,5 +1,11 @@
 # Event Scout — Changelog
 
+## Pass 4 — 2026-06-22 (per-event 3-lens "Why it matters")
+Added a `why: {isprava, tech, nds}` brief to **all 39 events** + a color-coded "Why it matters"
+block in each card (Isprava=emerald, Isprava Tech=violet, NDS=gold). Honest "Low/N/A" where a lens
+doesn't apply. Wired the `why` + `cadence` + `Predicted` fields into `PIPELINE_PROMPT.md` so every
+future refresh keeps generating them. No date/tier changes this pass.
+
 ## Pass 3 — 2026-06-22 (Predictive layer + CEO/UHNW breadth)
 Added a **`Predicted`** confidence level (violet) + a **cadence** field to the model — for
 reliably-recurring annuals projected into the window from historical pattern, distinct from a

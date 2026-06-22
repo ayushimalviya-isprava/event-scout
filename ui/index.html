@@ -92,6 +92,9 @@
   .details.open{display:block}
   .details .k{color:#52525b} .details .v{color:#d6d3d1}
   .details div{margin-bottom:6px}
+  .why{margin-top:11px;padding-top:10px;border-top:1px dashed rgba(255,255,255,.09)}
+  .whyh{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#52525b;margin-bottom:7px}
+  .why div{margin-bottom:5px} .why .wk{font-weight:600}
   @keyframes fade{from{opacity:0}to{opacity:1}}
   .cfoot{display:flex;align-items:center;justify-content:space-between;margin-top:16px}
   .lbtn{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:0;margin-right:14px}
@@ -252,6 +255,10 @@ function cardHTML(e){
         '<div><span class="k">Access · </span><span class="v">'+esc(e.access)+'</span></div>'+
         '<div><span class="k">Cost · </span><span class="v">'+esc(e.cost)+'</span></div>'+
         (e.cadence?'<div><span class="k">Cadence · </span><span class="v">'+esc(e.cadence)+'</span></div>':'')+
+        (e.why?'<div class="why"><div class="whyh">Why it matters</div>'+
+          '<div><span class="wk" style="color:#34d399">Isprava · </span><span class="v">'+esc(e.why.isprava)+'</span></div>'+
+          '<div><span class="wk" style="color:#8b5cf6">Isprava Tech · </span><span class="v">'+esc(e.why.tech)+'</span></div>'+
+          '<div><span class="wk" style="color:#e3b341">NDS · </span><span class="v">'+esc(e.why.nds)+'</span></div></div>':'')+
       '</div>'+
       '<div class="cfoot"><div>'+
         '<button class="lbtn" data-act="details" data-id="'+e.id+'">'+(open?'Less':'Details')+'</button>'+
