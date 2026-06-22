@@ -60,15 +60,58 @@ Confirm `Code.gs` + `appsscript.json` uploaded. Reload the Sheet → an
 4. Read Claude's diff; action "decisions needed now".
 
 ---
+# The local UI + 3-day refresh (active path — no Google needed)
+
+This is the path in use now (Google Calendar parked). The calendar UI is a self-contained
+file; a local launchd job runs Claude every 3 days to discover/verify events and rewrite the
+UI's data.
+
+```
+keywords.md ─▶ run.sh (headless Claude) ─▶ web search + fetch ─▶ label tier/date-confidence
+                                                                      │
+                                              ui/events.js  ◀─────────┘  (UI reads this)
+```
+
+## Open the calendar
+- Double-click `ui/index.html` (works offline, file://), or serve it:
+  `cd ~/event-scout/ui && python3 -m http.server 8765` → http://localhost:8765/
+
+## First refresh by hand (do this BEFORE scheduling)
+Run it once interactively so you can authorize the tools and eyeball the output:
+```
+~/event-scout/pipeline/run.sh
+```
+Then reload the UI — the "Updated" stamp and any new/changed events should appear.
+Tune discovery by editing `pipeline/keywords.md`.
+
+## Schedule the 3-day refresh (launchd)
+```
+cp ~/event-scout/pipeline/com.eventscout.refresh.plist ~/Library/LaunchAgents/
+launchctl load ~/Library/LaunchAgents/com.eventscout.refresh.plist     # start it
+launchctl list | grep eventscout                                       # confirm loaded
+```
+- Runs every 3 days (`StartInterval` 259200s). If the Mac was asleep at the mark, it fires
+  once on wake (the catch-up guard).
+- Logs: `pipeline/refresh.log` (Claude's run) + `pipeline/launchd.{out,err}.log`.
+- Pause / remove:
+  `launchctl unload ~/Library/LaunchAgents/com.eventscout.refresh.plist`
+- Force a run now: `launchctl start com.eventscout.refresh`
+
+> Note: each scheduled run spends tokens and makes web requests unattended. Run it by hand
+> first; only `launchctl load` when you're happy with what it does.
+
+## What it can and can't source
+- ✅ Open web + official event sites + **publicly-indexed** LinkedIn/X posts (via web search).
+- ❌ Not logged-in LinkedIn/X feeds (blocked by their ToS / require paid API) — not scraped.
+
+---
 ## Live state
-- [ ] 2026-06-22 — repo scaffolded locally (code, schema, seed, judge prompt). NOT yet pushed.
-- [ ] `clasp create` — pending
-- [ ] seed CSV imported — pending
-- [ ] first watch baseline — pending
-- [ ] first judge pass (seed from deep-research output) — pending (research run finishing)
-- [ ] calendar target decided + sync tested — pending
-- [ ] triggers installed — pending
+- [x] 2026-06-22 — repo scaffolded; deep-research seeded 11 verified events.
+- [x] 2026-06-22 — self-contained UI built (`ui/index.html`), data split to `ui/events.js`.
+- [x] 2026-06-22 — 3-day refresh pipeline written (`pipeline/`): keywords, prompt, run.sh, launchd plist.
+- [ ] First manual `pipeline/run.sh` — pending (do before scheduling).
+- [ ] `launchctl load` the refresh agent — pending (after a clean manual run).
+- [ ] Google Calendar sync — parked (Apps Script path above is intact for when you want it).
 
 ## Open decisions
-- Runtime account: personal vs MoM-style bot account.
-- Calendar: NDS's calendar (needs share) vs a dedicated "NDS — Events" calendar he subscribes to.
+- Whether/when to re-enable the Google Calendar sync alongside the UI.

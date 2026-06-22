@@ -3,6 +3,8 @@
 # It runs Claude headless against the pipeline prompt; Claude does the discover→fetch→
 # label→write loop and rewrites ui/events.js, then commits.
 set -euo pipefail
+# Make the CLI findable under launchd's minimal environment.
+export PATH="$HOME/.local/bin:/usr/local/bin:/opt/homebrew/bin:$HOME/.npm-global/bin:$PATH"
 cd "$(dirname "$0")/.."
 mkdir -p pipeline
 STAMP="$(date '+%Y-%m-%d %H:%M:%S')"

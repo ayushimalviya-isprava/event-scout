@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Event Scout 3-day refresh (launchd user agent).
+  StartInterval (not StartCalendarInterval) so a run missed while the Mac was asleep
+  fires once on wake — the "catch-up" guard. 259200 seconds = 3 days.
+  Install: see RUNBOOK.md §"Schedule the 3-day refresh".
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.eventscout.refresh</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/admin/event-scout/pipeline/run.sh</string>
+  </array>
+
+  <key>StartInterval</key>
+  <integer>259200</integer>
+
+  <key>RunAtLoad</key>
+  <false/>
+
+  <key>WorkingDirectory</key>
+  <string>/Users/admin/event-scout</string>
+
+  <key>StandardOutPath</key>
+  <string>/Users/admin/event-scout/pipeline/launchd.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/admin/event-scout/pipeline/launchd.err.log</string>
+
+  <key>ProcessType</key>
+  <string>Background</string>
+</dict>
+</plist>
