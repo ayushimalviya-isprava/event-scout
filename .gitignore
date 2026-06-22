@@ -1,0 +1,5 @@
+# clasp local creds / project link
+.clasprc.json
+src/.clasp.json
+node_modules/
+.DS_Store
