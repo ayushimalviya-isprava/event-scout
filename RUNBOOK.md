@@ -118,6 +118,28 @@ It writes `pipeline/grok-leads.json`; the judge reads those leads and **verifies
 site** before listing. Verify the model id / live-search params against current xAI docs if it errors.
 
 ---
+# Hosting
+
+Static site (`ui/index.html` + `ui/events.js`). **Privacy note:** this is named intel about NDS —
+free hosts are public. Choose accordingly.
+
+## A. GitHub Pages (public; auto-redeploys on push — closes the refresh loop)
+```
+gh repo create event-scout --public --source=. --remote=origin --push   # first time
+# repo → Settings → Pages → Source: "GitHub Actions"   (one-time)
+```
+`.github/workflows/pages.yml` deploys the `ui/` folder on every push to main. So the 3-day refresh
+(which commits + can `git push`) auto-updates the live site. URL: `https://<user>.github.io/event-scout/`.
+(Pages on a PRIVATE repo needs a paid GitHub plan; free Pages = public repo + public site.)
+
+## B. Netlify Drop (fastest, public, no repo)
+Go to https://app.netlify.com/drop and drag the `ui/` folder in → instant URL. Re-drag to update.
+
+## C. Cloudflare Pages + Access (free AND private/login-gated — best if it must stay confidential)
+- Connect the repo (or `npx wrangler pages deploy ui`) → Cloudflare Pages.
+- Add a Cloudflare Zero-Trust **Access** policy (free up to 50 users) → email-gated login in front of the site.
+- Repo can stay private; only invited emails can view.
+
 ## Live state
 - [x] 2026-06-22 — repo scaffolded; deep-research seeded 11 verified events.
 - [x] 2026-06-22 — self-contained UI built (`ui/index.html`), data split to `ui/events.js`.
