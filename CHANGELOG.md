@@ -1,5 +1,20 @@
 # Event Scout — Changelog
 
+## Pass 8 — 2026-06-22 (production redesign: video hero + premium theme)
+Integrated the requested hero design language and shipped the prod calendar.
+- **Full-screen hero**: looping CloudFront background video with a requestAnimationFrame fade loop
+  (0.5s in/out, reset-and-replay on end), centered blur shape, navbar (logo, nav links, **Categories
+  dropdown wired to the real filters**, Open-Calendar CTA), gradient **General Sans** headline
+  *“The rooms that matter.”*, subtitle, glass CTA, and a **liquid-glass logo marquee**
+  (Milken · Sequoia · TiEcon · iConnections · Cerebral Valley · FII · ULI · Nareit · Blueprint).
+  Copy adapted from the source design to Event Scout.
+- **Theme**: deep blue-purple `260 87% 3%` + off-white, **Geist Sans** body / **General Sans** display,
+  amber (`#fcd34d`) accents, indigo→purple→amber gradient.
+- **Calendar** restyled to match (glass cards, amber ★ ratings, violet Predicted dots) — all logic
+  (ratings, filters, why, suggestion, plan, localStorage) preserved.
+- **Robustness**: fonts + video are graceful enhancements; the calendar core remains self-contained
+  vanilla JS + inline CSS, so a blocked CDN can never blank the page.
+
 ## Pass 7 — 2026-06-22 (context-grounded re-rating)
 Re-scored every event independently on NDS's mandate (RE×AI center of gravity, India-US diaspora,
 allocate/co-invest, Isprava US-expansion) **and** the access/peer bar — not the old tier conversion.
