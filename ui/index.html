@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Event Scout — NDS · Nov 2026 → Nov 2027</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/framer-motion@11.3.19/dist/framer-motion.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  html,body,#root{height:100%}
+  body{background:#08080b;color:#e7e5e4;font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .display{font-family:'Fraunces',Georgia,serif}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:#26262b;border-radius:8px}
+  ::-webkit-scrollbar-track{background:transparent}
+  .grain:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+</style>
+</head>
+<body class="grain">
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { useState, useMemo, useEffect } = React;
+
+/* Framer Motion with graceful fallback so the page always renders */
+const FM = window.Motion || {};
+const motion = FM.motion || new Proxy({}, { get: (_, tag) => React.forwardRef((p, ref) => {
+  const { initial, animate, exit, transition, whileHover, whileTap, variants, layout, layoutId, ...rest } = p;
+  return React.createElement(tag, { ref, ...rest });
+}) });
+const AnimatePresence = FM.AnimatePresence || (({ children }) => children);
+
+/* ---------------- DATA ----------------
+   Pre-judge estimates. Dates tagged by confidence; the watcher + Claude judge
+   pass firm these up. `tba:true` = month known, exact dates not yet announced. */
+const CATS = {
+  realestate: { label: "Real Estate", dot: "#34d399" },
+  ai:         { label: "AI",          dot: "#a78bfa" },
+  tech:       { label: "Tech",        dot: "#38bdf8" },
+  capital:    { label: "Capital",     dot: "#e3b341" },
+  diaspora:   { label: "India–US",    dot: "#fb7185" },
+  gated:      { label: "Gated",       dot: "#a1a1aa" },
+};
+
+const EVENTS = [
+  { id:"nar-nxt-26", name:"NAR NXT", cat:"realestate", tier:3, start:"2026-11-13", end:"2026-11-15", tba:true, conf:"Unconfirmed", city:"Houston, TX",
+    cost:"~$300–800", access:"Ticketed", verdict:"Skip — 20k+ agents, junior-heavy; nothing he can't get from a podcast.",
+    room:"Residential agents & brokers at scale; few principals.", url:"https://www.narnxt.realtor/" },
+  { id:"pere-america-26", name:"PERE America Forum", cat:"capital", tier:2, start:"2026-11-04", end:"2026-11-05", conf:"Confirmed", city:"New York, NY",
+    cost:"Managers pay; complimentary gated LP passes", access:"Gated: free LP pass for pensions/SWFs/endowments/family offices actively making fund commitments; managers pay",
+    verdict:"Go only if raising or allocating to US real estate — 160+ LPs, but it's a capital room, not a peer-founder room.",
+    room:"160+ institutional LPs (pensions, SWFs, endowments, family offices) + GPs; 400+ total (sourced).", url:"https://live.peievents.com/private-real-estate/america" },
+  { id:"ces-27", name:"CES", cat:"tech", tier:3, start:"2027-01-06", end:"2027-01-09", conf:"Likely", city:"Las Vegas, NV",
+    cost:"~$300 + heavy all-in", access:"Ticketed", verdict:"Skip the floor; only worth it for the private dinners around it.",
+    room:"Everyone and no one — 100k+ attendees, vendor ocean.", url:"https://www.ces.tech/" },
+  { id:"iconnections-27", name:"iConnections Global Alts Miami", cat:"capital", tier:1, start:"2027-02-22", end:"2027-02-25", conf:"Confirmed", city:"Miami Beach, FL",
+    cost:"$$$ (allocator/manager tiers)", access:"Gated: apply as an allocator/family office; curated 1:1 meeting engine (co-hosted with MFA)",
+    verdict:"Go if allocating or raising — pre-booked capital 1:1s and rare allocator density; thinner for pure peer-founder networking.",
+    room:"Institutional LPs, family offices, fund managers (sourced; allocator-skewed).", url:"https://iconnections.io/global-alts-miami-2027/", shortlist:true },
+  { id:"inman-ny-27", name:"Inman Connect New York", cat:"realestate", tier:3, start:"2027-01-26", tba:true, conf:"Unconfirmed", city:"New York, NY",
+    cost:"~$1,800", access:"Ticketed", verdict:"Skip — US residential brokerage focus, thin overlap with his mandate.",
+    room:"Brokerage leaders, residential tech (typical profile).", url:"https://www.inmanconnectnewyork.com/" },
+  { id:"nmhc-27", name:"NMHC Annual Meeting", cat:"realestate", tier:2, start:"2027-01-26", end:"2027-01-28", conf:"Confirmed", city:"Las Vegas, NV (ARIA)",
+    cost:"Members only-ish", access:"Gated: NMHC membership; deal-making lobby",
+    verdict:"Go only if pushing US multifamily — owners & capital transact here, but it's the org's largest gathering, not an intimate room.",
+    room:"Multifamily owners, developers, debt/equity principals (sourced).", url:"https://www.nmhc.org/meetings/calendar/upcoming-meetings/" },
+  { id:"upfront-27", name:"Upfront Summit", cat:"capital", tier:2, start:"2027-02-25", tba:true, conf:"Unconfirmed", city:"Los Angeles, CA",
+    cost:"Gated invite", access:"Gated: Upfront Ventures invite / portfolio & LP network",
+    verdict:"Go if you can get invited — best curated VC/founder room on the West Coast.",
+    room:"Tier-1 VCs, breakout founders, LPs (typical profile).", url:"https://upfront.com/summit", shortlist:true },
+  { id:"humanx-27", name:"HumanX", cat:"ai", tier:2, start:"2027-03-07", end:"2027-03-10", conf:"Confirmed", city:"Las Vegas, NV",
+    cost:"~$2,000+", access:"Ticketed", verdict:"Go if AI is the quarter's theme — highest C-suite density of the big AI shows, but the value is in the side-rooms, not the 12k floor.",
+    room:"~1,000 C-level among 12,000+ from 40 countries; C-suite/VP AI decision-makers (organizer-sourced).", url:"https://www.humanx.co/why-attend", shortlist:true },
+  { id:"gtc-27", name:"NVIDIA GTC", cat:"ai", tier:3, start:"2027-03-14", end:"2027-03-18", conf:"Confirmed", city:"San Jose, CA",
+    cost:"~$1,000 in-person + heavy all-in", access:"Ticketed", verdict:"Skip the floor — 30k+ of developers, IT buyers & students; only the side-dinners matter, and you don't need a badge for those.",
+    room:"Developers, researchers, IT decision-makers, business leaders & students (NVIDIA FAQ) — not a founder-peer room.", url:"https://www.nvidia.com/gtc/" },
+  { id:"cerebral-valley", name:"Cerebral Valley AI Summit", cat:"ai", tier:1, start:"2027-03-25", tba:true, conf:"Unconfirmed", city:"San Francisco, CA",
+    cost:"Tiered passes ~$99–$999", access:"Gated: apply to attend (invite-only via reg.newcomer.events); editions ~2×/yr, next dates TBA",
+    verdict:"Go — the best AI peer room going: small, curated, ~50% venture-backed founders + ~33% top-firm GPs. Apply the day the next edition opens.",
+    room:"~50% venture-backed AI startup founders, ~33% GP investors from top firms, plus media (organizer-sourced).", url:"https://cerebralvalley.com/who-attends", shortlist:true },
+  { id:"sxsw-27", name:"SXSW", cat:"tech", tier:3, start:"2027-03-12", end:"2027-03-16", tba:true, conf:"Unconfirmed", city:"Austin, TX",
+    cost:"~$1,500+", access:"Ticketed", verdict:"Skip unless a specific salon pulls him; signal-to-noise is poor at his level.",
+    room:"Broad tech/media/culture (typical profile).", url:"https://www.sxsw.com/" },
+  { id:"milken-27", name:"Milken Institute Global Conference", cat:"capital", tier:1, start:"2027-05-03", tba:true, conf:"Unconfirmed", city:"Los Angeles, CA",
+    cost:"$$$$ (invite/sponsor)", access:"Gated: invitation or institutional pass; apply early. 2027 dates TBA (2026 was May 3–6).",
+    verdict:"Go — highest concentration of global capital + crossover principals anywhere; work the side-dinners, the main stage is ~4,000 people.",
+    room:"Past speakers incl. Bill Clinton, Jensen Huang, Mary Barra, IMF's Kristalina Georgieva, Queen Rania; ~4,000 participants from ~80 countries (sourced).", url:"https://milkeninstitute.org/events/global-conference-2026", shortlist:true },
+  { id:"tiecon-27", name:"TiEcon", cat:"diaspora", tier:1, start:"2027-05-07", end:"2027-05-08", tba:true, conf:"Unconfirmed", city:"Santa Clara, CA",
+    cost:"~$400–900", access:"Ticketed (sponsor/charter for inner rooms)",
+    verdict:"Go — the room full of successful Indian-origin founders & investors in US tech. Highest fit.",
+    room:"Indian-diaspora founders, VCs, operators (typical profile).", url:"https://tiecon.org/", shortlist:true },
+  { id:"uli-spring-27", name:"ULI Spring Meeting", cat:"realestate", tier:2, start:"2027-05-18", tba:true, conf:"Unconfirmed", city:"TBA (US)",
+    cost:"Member pricing", access:"Gated-ish: ULI membership", verdict:"Go if building US real-estate relationships — real principals, less circus than the big shows.",
+    room:"Developers, investors, urbanists (typical profile).", url:"https://spring.uli.org/" },
+  { id:"icsc-27", name:"ICSC LAS VEGAS", cat:"realestate", tier:3, start:"2027-05-18", end:"2027-05-20", tba:true, conf:"Unconfirmed", city:"Las Vegas, NV",
+    cost:"~$700+", access:"Ticketed", verdict:"Skip — retail/leasing focus, enormous, off-mandate.",
+    room:"Retail real estate, leasing, brokers.", url:"https://www.icsc.com/events" },
+  { id:"aspen-ideas-27", name:"Aspen Ideas Festival", cat:"capital", tier:2, start:"2027-06-26", end:"2027-07-02", tba:true, conf:"Unconfirmed", city:"Aspen, CO",
+    cost:"$$$ + lodging", access:"Gated: application / invitation", verdict:"Go to learn-from, not to deal — exceptional minds, softer on transactional peers.",
+    room:"Leaders across policy, science, business, arts.", url:"https://www.aspenideas.org/" },
+  { id:"allen-co-27", name:"Allen & Co Sun Valley", cat:"gated", tier:3, start:"2027-07-06", tba:true, conf:"Unconfirmed", city:"Sun Valley, ID",
+    cost:"—", access:"Gated: invite-only. Target via a16z/Sequoia/banker relationship — don't book.",
+    verdict:"Target, don't book — the room, but no door he can buy. Play the long game.",
+    room:"Media/tech/finance billionaires & CEOs.", url:"" },
+  { id:"fortune-bt-27", name:"Fortune Brainstorm Tech", cat:"tech", tier:2, start:"2027-07-12", tba:true, conf:"Unconfirmed", city:"Park City, UT (rotates)",
+    cost:"$$$ invite", access:"Gated: Fortune invitation", verdict:"Go if invited — small, senior, genuinely conversational.",
+    room:"Tech CEOs, investors, senior operators.", url:"https://fortune.com/conferences/" },
+  { id:"ai4-27", name:"Ai4", cat:"ai", tier:3, start:"2027-08-10", end:"2027-08-12", tba:true, conf:"Unconfirmed", city:"Las Vegas, NV",
+    cost:"~$1,500+", access:"Ticketed", verdict:"Skip — 12,000+ and 400+ exhibitors; buyers and sellers, few peers.",
+    room:"12,000+ attendees, 1,000+ speakers, 400+ exhibitors; VP/Director enterprise practitioners (organizer-sourced).", url:"https://ai4.io/" },
+  { id:"all-in-27", name:"All-In Summit", cat:"capital", tier:2, start:"2027-09-07", tba:true, conf:"Unconfirmed", city:"Los Angeles, CA (rotates)",
+    cost:"$$$ (lottery/apply)", access:"Gated: application / lottery", verdict:"Go if you draw in — founder/investor peer density is real, but it's a stage show.",
+    room:"Founders, VCs, operators (typical profile).", url:"https://allin.com/summit" },
+  { id:"the-ai-conf-27", name:"The AI Conference", cat:"ai", tier:2, start:"2027-09-15", tba:true, conf:"Unconfirmed", city:"San Francisco, CA",
+    cost:"~$1,200", access:"Ticketed", verdict:"Go for frontier-AI builders without the GTC scale.",
+    room:"AI founders, researchers, applied-AI leads.", url:"https://aiconference.com/" },
+  { id:"blueprint-27", name:"Blueprint", cat:"realestate", tier:2, start:"2027-09-21", tba:true, conf:"Unconfirmed", city:"Las Vegas, NV",
+    cost:"~$2,000+", access:"Ticketed", verdict:"Go if proptech is the theme — best of the real-estate-tech shows, but ~3,500 attendees makes it convention-scale, not a curated room. 2027 dates TBA (2026 was Sep 22–24).",
+    room:"~3,500: 1,000+ Built World execs, 950+ startups/investors (organizer-sourced).", url:"https://www.blueprintvegas.com/" },
+  { id:"usispf-27", name:"USISPF Leadership Summit", cat:"diaspora", tier:2, start:"2027-09-20", tba:true, conf:"Unconfirmed", city:"Washington, DC (varies)",
+    cost:"Gated invite", access:"Gated: USISPF membership / invitation", verdict:"Go if courting US–India corridor & policy access — senior, but agenda-driven.",
+    room:"US–India CEOs, officials, investors.", url:"https://usispf.org/events/" },
+  { id:"uli-fall-27", name:"ULI Fall Meeting", cat:"realestate", tier:2, start:"2027-10-12", tba:true, conf:"Unconfirmed", city:"TBA (US)",
+    cost:"Member pricing", access:"Gated-ish: ULI membership", verdict:"Go if real-estate relationships are the theme that quarter.",
+    room:"Developers, investors, capital sources.", url:"https://fall.uli.org/" },
+  { id:"money2020-27", name:"Money20/20 USA", cat:"tech", tier:3, start:"2027-10-25", end:"2027-10-28", tba:true, conf:"Unconfirmed", city:"Las Vegas, NV",
+    cost:"~$2,500+", access:"Ticketed", verdict:"Skip — fintech-centric, off-mandate unless a payments thesis emerges.",
+    room:"Fintech & payments execs.", url:"https://us.money2020.com/" },
+  { id:"nar-nxt-27", name:"NAR NXT", cat:"realestate", tier:3, start:"2027-11-12", tba:true, conf:"Unconfirmed", city:"TBA (US)",
+    cost:"~$300–800", access:"Ticketed", verdict:"Skip — same as the '26 edition; scale over substance.",
+    room:"Residential agents & brokers.", url:"https://www.narnxt.realtor/" },
+  { id:"cretech-ny-27", name:"CREtech New York", cat:"realestate", tier:3, start:"2027-11-10", tba:true, conf:"Unconfirmed", city:"New York, NY",
+    cost:"~$1,500", access:"Ticketed", verdict:"Monitor — structurally a trade show (~3,000, 72% VP+, 200 sponsors); useful for deal-flow, not peer relationships.",
+    room:"~3,000 attendees, 72% VP+, 200 sponsors (organizer-sourced).", url:"https://discover.cretech.com/cretech-new-york" },
+];
+
+const TIER_META = {
+  1: { label:"Tier 1", sub:"Clears the trip alone", accent:"#e3b341", glow:"rgba(227,179,65,.16)" },
+  2: { label:"Tier 2", sub:"Worth it if in region", accent:"#9fb3c8", glow:"rgba(159,179,200,.12)" },
+  3: { label:"Tier 3", sub:"Optional / monitor", accent:"#6b7280", glow:"rgba(107,114,128,.10)" },
+};
+const CONF_META = {
+  Confirmed:   { c:"#34d399", t:"Confirmed" },
+  Likely:      { c:"#e3b341", t:"Likely" },
+  Unconfirmed: { c:"#9ca3af", t:"Unconfirmed" },
+};
+const STATUS_CYCLE = ["", "interested", "booked", "skip"];
+const STATUS_META = {
+  interested: { label:"Interested", c:"#e3b341" },
+  booked:     { label:"Booked",     c:"#34d399" },
+  skip:       { label:"Skip",       c:"#71717a" },
+};
+
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function monthKey(iso){ const [y,m]=iso.split("-"); return `${y}-${m}`; }
+function monthLabel(iso){ const [y,m]=iso.split("-"); return `${MONTHS[+m-1]} ${y}`; }
+function dayLabel(e){
+  const d=new Date(e.start+"T00:00:00");
+  const s=`${MONTHS[d.getMonth()]} ${d.getDate()}`;
+  if(e.end){ const ed=new Date(e.end+"T00:00:00"); return `${s}–${ed.getDate()}`; }
+  return s;
+}
+
+/* ---------------- PERSISTENCE ---------------- */
+const LS_KEY="eventScout.v1";
+function loadState(){ try{ return JSON.parse(localStorage.getItem(LS_KEY))||{}; }catch(e){ return {}; } }
+function saveState(s){ try{ localStorage.setItem(LS_KEY, JSON.stringify(s)); }catch(e){} }
+
+/* ---------------- COMPONENTS ---------------- */
+function Pill({children, color, soft}){
+  return <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium tracking-wide"
+    style={{ color, background: soft||"transparent", border:`1px solid ${color}33` }}>{children}</span>;
+}
+
+function EventCard({e, user, onCycle, onStar}){
+  const [open,setOpen]=useState(false);
+  const tm=TIER_META[e.tier], cm=CONF_META[e.conf], cat=CATS[e.cat];
+  const st=user.status, starred=user.starred;
+  return (
+    <motion.div layout initial={{opacity:0,y:14}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}}
+      transition={{duration:.4,ease:[.22,1,.36,1]}} whileHover={{y:-3}}
+      className="relative rounded-2xl p-[1px] overflow-hidden"
+      style={{ background:`linear-gradient(135deg, ${tm.accent}40, transparent 55%)` }}>
+      <div className="rounded-2xl bg-[#0d0d11]/90 backdrop-blur-sm border border-white/[0.06] p-5"
+        style={{ boxShadow:`0 1px 0 0 rgba(255,255,255,.03) inset, 0 20px 40px -28px ${tm.glow}` }}>
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-2 flex-wrap">
+            <Pill color={tm.accent} soft={tm.glow}>{tm.label}</Pill>
+            <Pill color={cat.dot}><span className="w-1.5 h-1.5 rounded-full" style={{background:cat.dot}}></span>{cat.label}</Pill>
+            {e.shortlist && <Pill color="#e3b341" soft="rgba(227,179,65,.14)">★ Top 6</Pill>}
+          </div>
+          <button onClick={()=>onStar(e.id)} className="text-lg leading-none transition-transform hover:scale-125"
+            style={{color: starred?"#e3b341":"#3f3f46"}} title="Star">★</button>
+        </div>
+
+        <h3 className="display text-[22px] leading-tight mt-3 text-stone-100">{e.name}</h3>
+
+        <div className="flex items-center gap-3 mt-2 text-sm text-stone-400">
+          <span className="text-stone-200 font-medium">{dayLabel(e)}{e.tba && <span className="text-stone-500 font-normal"> · dates TBA</span>}</span>
+          <span className="inline-flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full" style={{background:cm.c}}></span>{cm.t}</span>
+        </div>
+        <div className="text-sm text-stone-400 mt-0.5">{e.city}</div>
+
+        <p className="text-[13.5px] text-stone-300/90 mt-3 leading-relaxed">{e.verdict}</p>
+
+        <AnimatePresence>
+        {open && (
+          <motion.div initial={{opacity:0,height:0}} animate={{opacity:1,height:"auto"}} exit={{opacity:0,height:0}}
+            transition={{duration:.3}} className="overflow-hidden">
+            <div className="mt-3 pt-3 border-t border-white/[0.06] space-y-1.5 text-[13px]">
+              <div><span className="text-stone-500">Who's in the room · </span><span className="text-stone-300">{e.room}</span></div>
+              <div><span className="text-stone-500">Access · </span><span className="text-stone-300">{e.access}</span></div>
+              <div><span className="text-stone-500">Cost · </span><span className="text-stone-300">{e.cost}</span></div>
+            </div>
+          </motion.div>
+        )}
+        </AnimatePresence>
+
+        <div className="flex items-center justify-between mt-4">
+          <div className="flex items-center gap-2">
+            <button onClick={()=>setOpen(o=>!o)} className="text-xs text-stone-400 hover:text-stone-200 transition-colors">
+              {open?"Less":"Details"}
+            </button>
+            {e.url && <a href={e.url} target="_blank" rel="noreferrer" className="text-xs text-stone-500 hover:text-amber-300/90 transition-colors">Source ↗</a>}
+          </div>
+          <button onClick={()=>onCycle(e.id)}
+            className="text-xs font-medium rounded-full px-3 py-1 border transition-colors"
+            style={ st
+              ? { color:STATUS_META[st].c, borderColor:`${STATUS_META[st].c}55`, background:`${STATUS_META[st].c}14` }
+              : { color:"#71717a", borderColor:"#27272a" } }>
+            {st ? STATUS_META[st].label : "Add to plan"}
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function App(){
+  const [state,setState]=useState(loadState);
+  const [tier,setTier]=useState(0);          // 0 = all
+  const [cat,setCat]=useState("all");
+  const [q,setQ]=useState("");
+  const [shortlistOnly,setShortlistOnly]=useState(false);
+  const [hideSkip,setHideSkip]=useState(false);
+
+  useEffect(()=>saveState(state),[state]);
+  const user=(id)=>state[id]||{};
+  const cycle=(id)=>setState(s=>{ const cur=(s[id]&&s[id].status)||""; const ni=(STATUS_CYCLE.indexOf(cur)+1)%STATUS_CYCLE.length;
+    return {...s,[id]:{...s[id],status:STATUS_CYCLE[ni]}}; });
+  const star=(id)=>setState(s=>({...s,[id]:{...s[id],starred:!(s[id]&&s[id].starred)}}));
+
+  const filtered=useMemo(()=>{
+    return EVENTS.filter(e=>{
+      if(tier && e.tier!==tier) return false;
+      if(cat!=="all" && e.cat!==cat) return false;
+      if(shortlistOnly && !e.shortlist) return false;
+      if(hideSkip && (user(e.id).status==="skip")) return false;
+      if(q){ const s=q.toLowerCase(); if(!(e.name.toLowerCase().includes(s)||e.city.toLowerCase().includes(s)||CATS[e.cat].label.toLowerCase().includes(s))) return false; }
+      return true;
+    }).sort((a,b)=>a.start.localeCompare(b.start));
+  },[tier,cat,q,shortlistOnly,hideSkip,state]);
+
+  const groups=useMemo(()=>{
+    const m={}; filtered.forEach(e=>{ const k=monthKey(e.start); (m[k]=m[k]||[]).push(e); });
+    return Object.keys(m).sort().map(k=>({k,label:monthLabel(filtered.find(e=>monthKey(e.start)===k).start),items:m[k]}));
+  },[filtered]);
+
+  const counts=useMemo(()=>({
+    t1:EVENTS.filter(e=>e.tier===1).length, t2:EVENTS.filter(e=>e.tier===2).length, t3:EVENTS.filter(e=>e.tier===3).length,
+    planned:Object.values(state).filter(v=>v.status&&v.status!=="skip").length,
+  }),[state]);
+
+  const Chip=({active,onClick,children,color})=>(
+    <button onClick={onClick}
+      className="text-xs px-3 py-1.5 rounded-full border transition-all whitespace-nowrap"
+      style={ active
+        ? { color:"#0a0a0a", background:color||"#e7e5e4", borderColor:"transparent", fontWeight:600 }
+        : { color:"#a1a1aa", borderColor:"#27272a", background:"transparent" } }>{children}</button>
+  );
+
+  return (
+    <div className="relative z-10 max-w-5xl mx-auto px-5 sm:px-8 pb-28">
+      {/* HERO */}
+      <header className="pt-14 pb-8">
+        <div className="flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase text-amber-300/70">
+          <span className="w-6 h-px bg-amber-300/40"></span> Chief of Staff · Network Strategy
+        </div>
+        <h1 className="display text-5xl sm:text-6xl mt-4 text-stone-100 leading-[1.05]">Event Scout</h1>
+        <p className="text-stone-400 mt-3 max-w-xl text-[15px] leading-relaxed">
+          A ruthlessly filtered radar of the rooms worth NDS's time — real estate, AI, capital & the India–US corridor.
+          <span className="text-stone-500"> Window: Nov 2026 → Nov 2027.</span>
+        </p>
+        <div className="flex flex-wrap gap-x-6 gap-y-2 mt-6 text-sm">
+          <span className="text-stone-500">Tracking <b className="text-stone-200">{EVENTS.length}</b> events</span>
+          <span style={{color:TIER_META[1].accent}}>● {counts.t1} Tier 1</span>
+          <span style={{color:TIER_META[2].accent}}>● {counts.t2} Tier 2</span>
+          <span style={{color:TIER_META[3].accent}}>● {counts.t3} Tier 3</span>
+          <span className="text-stone-500">In plan: <b className="text-stone-200">{counts.planned}</b></span>
+        </div>
+      </header>
+
+      {/* CONTROLS */}
+      <div className="sticky top-0 z-20 -mx-5 sm:-mx-8 px-5 sm:px-8 py-3 bg-[#08080b]/85 backdrop-blur-md border-b border-white/[0.06]">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Search events, cities…"
+              className="flex-1 bg-white/[0.03] border border-white/10 rounded-full px-4 py-2 text-sm text-stone-200 placeholder:text-stone-600 focus:outline-none focus:border-amber-300/40"/>
+          </div>
+          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+            <Chip active={tier===0} onClick={()=>setTier(0)}>All tiers</Chip>
+            <Chip active={tier===1} onClick={()=>setTier(1)} color={TIER_META[1].accent}>Tier 1</Chip>
+            <Chip active={tier===2} onClick={()=>setTier(2)} color={TIER_META[2].accent}>Tier 2</Chip>
+            <Chip active={tier===3} onClick={()=>setTier(3)} color={TIER_META[3].accent}>Tier 3</Chip>
+            <span className="w-px h-5 bg-white/10 mx-1 shrink-0"></span>
+            <Chip active={cat==="all"} onClick={()=>setCat("all")}>All</Chip>
+            {Object.entries(CATS).map(([k,v])=>(
+              <Chip key={k} active={cat===k} onClick={()=>setCat(k)} color={v.dot}>{v.label}</Chip>
+            ))}
+            <span className="w-px h-5 bg-white/10 mx-1 shrink-0"></span>
+            <Chip active={shortlistOnly} onClick={()=>setShortlistOnly(v=>!v)} color="#e3b341">★ Top 6</Chip>
+            <Chip active={hideSkip} onClick={()=>setHideSkip(v=>!v)}>Hide skips</Chip>
+          </div>
+        </div>
+      </div>
+
+      {/* TIMELINE */}
+      <main className="mt-8">
+        {groups.length===0 && (
+          <div className="text-center py-24 text-stone-600">No events match. Loosen the filters.</div>
+        )}
+        {groups.map(g=>(
+          <section key={g.k} className="mb-10">
+            <div className="flex items-center gap-4 mb-4">
+              <h2 className="display text-xl text-stone-300">{g.label}</h2>
+              <span className="text-xs text-stone-600">{g.items.length} event{g.items.length>1?"s":""}</span>
+              <div className="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent"></div>
+            </div>
+            <motion.div layout className="grid sm:grid-cols-2 gap-4">
+              <AnimatePresence>
+                {g.items.map(e=>(
+                  <EventCard key={e.id} e={e} user={user(e.id)} onCycle={cycle} onStar={star}/>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          </section>
+        ))}
+      </main>
+
+      <footer className="mt-16 pt-6 border-t border-white/[0.06] text-xs text-stone-600 leading-relaxed">
+        Dates are pre-judge estimates tagged by confidence (Confirmed / Likely / Unconfirmed). The Apps Script watcher
+        diffs each source's date page; Claude's judge pass firms up dates, tiers & verdicts. Attendee profiles are
+        sourced or marked “typical profile” — never invented. Your plan & stars are saved locally in this browser.
+      </footer>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
