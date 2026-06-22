@@ -166,6 +166,9 @@
   .dd.open{display:block}
   .dd button{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:none;border:none;color:hsl(var(--foreground)/.85);font-size:13.5px;padding:8px 10px;border-radius:8px;cursor:pointer;font-family:var(--font-body)}
   .dd button:hover{background:hsl(var(--foreground)/.06)}
+  .catfilter{position:relative;flex:0 0 auto}
+  .dd.ddleft{left:0;top:42px;transform:none}
+  #catFilterBtn .chev{margin-left:3px}
 </style>
 </head>
 <body>
@@ -299,30 +302,30 @@ function mkey(iso){ return iso.slice(0,7); }
 function mlabel(iso){ var p=iso.split("-"); return MONTHS[(+p[1])-1]+" "+p[0]; }
 function dlabel(e){ var a=e.start.split("-").map(Number); var s=MONTHS[a[1]-1]+" "+a[2]; if(e.end){ var b=e.end.split("-").map(Number); s+="–"+b[2]; } return s; }
 
-function buildChips(){
-  var html="";
-  html+='<button class="chip" data-act="rating" data-val="0">All</button>';
-  html+='<button class="chip" data-act="rating" data-val="4.5">4.5★+</button>';
-  html+='<button class="chip" data-act="rating" data-val="4">4★+</button>';
-  html+='<button class="chip" data-act="rating" data-val="3">3★+</button>';
-  html+='<span class="sep"></span>';
-  html+='<button class="chip" data-act="cat" data-val="all">All</button>';
-  for(var k in CATS){ html+='<button class="chip catchip" data-act="cat" data-val="'+k+'"><span class="cdot" style="background:'+CATS[k].dot+'"></span>'+CATS[k].label+'</button>'; }
-  html+='<span class="sep"></span>';
-  html+='<button class="chip" data-act="hidelow">Hide low (≤2★)</button>';
-  document.getElementById("chips").innerHTML=html;
-  // category dropdown in navbar
-  var dd="";
+var CHEV='<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>';
+function catOptions(){
+  var dd='<button data-act="cat" data-val="all">All categories</button>';
   for(var c in CATS){ dd+='<button data-act="cat" data-val="'+c+'"><span class="cdot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+CATS[c].dot+'"></span>'+CATS[c].label+'</button>'; }
-  document.getElementById("catDD").innerHTML=dd;
+  return dd;
+}
+function buildChips(){
+  document.getElementById("chips").innerHTML=
+    '<button class="chip" data-act="rating" data-val="0">All ratings</button>'+
+    '<button class="chip" data-act="rating" data-val="4.5">4.5★+</button>'+
+    '<button class="chip" data-act="rating" data-val="4">4★+</button>'+
+    '<button class="chip" data-act="rating" data-val="3">3★+</button>'+
+    '<span class="sep"></span>'+
+    '<span class="catfilter"><button class="chip" id="catFilterBtn">All categories '+CHEV+'</button>'+
+      '<div class="dd ddleft" id="catFilterDD">'+catOptions()+'</div></span>';
+  document.getElementById("catDD").innerHTML=catOptions();
   syncChips();
 }
 function syncChips(){
   var i,els=document.querySelectorAll('[data-act="rating"]');
   for(i=0;i<els.length;i++) els[i].classList.toggle("active", Number(els[i].dataset.val)===filters.minRating);
-  els=document.querySelectorAll('#chips [data-act="cat"]');
-  for(i=0;i<els.length;i++) els[i].classList.toggle("active", els[i].dataset.val===filters.cat);
-  document.querySelector('[data-act="hidelow"]').classList.toggle("active", filters.hideLow);
+  var btn=document.getElementById("catFilterBtn"); if(!btn) return;
+  if(filters.cat==="all"){ btn.classList.remove("active"); btn.innerHTML='All categories '+CHEV; }
+  else { btn.classList.add("active"); btn.innerHTML='<span class="cdot" style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:'+CATS[filters.cat].dot+'"></span>'+CATS[filters.cat].label+' '+CHEV; }
 }
 
 function buildStats(){
@@ -427,15 +430,18 @@ function renderPlan(){
 function scrollTo(id){ var el=document.getElementById(id); if(el) el.scrollIntoView({behavior:"smooth"}); }
 
 document.addEventListener("click", function(ev){
-  var t=ev.target.closest("[data-act],[data-scroll],[data-rate],#catBtn"); if(!t) return;
-  // nav
+  // close any open dropdown when clicking outside it (and not on a toggle)
+  if(!ev.target.closest(".dd") && !ev.target.closest("#catBtn,#catFilterBtn")){
+    var openDD=document.querySelectorAll(".dd.open"); for(var z=0;z<openDD.length;z++) openDD[z].classList.remove("open");
+  }
+  var t=ev.target.closest("[data-act],[data-scroll],[data-rate],#catBtn,#catFilterBtn"); if(!t) return;
   if(t.dataset && t.dataset.scroll){ scrollTo(t.dataset.scroll); return; }
   if(t.dataset && t.dataset.rate){ filters.minRating=Number(t.dataset.rate); syncChips(); renderTimeline(); scrollTo("calendar"); return; }
   if(t.id==="catBtn"){ document.getElementById("catDD").classList.toggle("open"); return; }
+  if(t.id==="catFilterBtn"){ document.getElementById("catFilterDD").classList.toggle("open"); return; }
   var act=t.dataset.act, id=t.dataset.id, val=t.dataset.val;
   if(act==="rating"){ filters.minRating=Number(val); syncChips(); renderTimeline(); }
-  else if(act==="cat"){ filters.cat=val; syncChips(); renderTimeline(); document.getElementById("catDD").classList.remove("open"); if(t.closest("#catDD")) scrollTo("calendar"); }
-  else if(act==="hidelow"){ filters.hideLow=!filters.hideLow; syncChips(); renderTimeline(); }
+  else if(act==="cat"){ var fromNav=!!t.closest("#catDD"); filters.cat=val; syncChips(); renderTimeline(); document.getElementById("catDD").classList.remove("open"); var cf=document.getElementById("catFilterDD"); if(cf) cf.classList.remove("open"); if(fromNav) scrollTo("calendar"); }
   else if(act==="details"){ openSet[id]=!openSet[id]; var y=window.scrollY; renderTimeline(); window.scrollTo(0,y); }
   else if(act==="status"){ state[id]=state[id]||{}; var cur=state[id].status||""; state[id].status=STATUS_CYCLE[(STATUS_CYCLE.indexOf(cur)+1)%STATUS_CYCLE.length]; saveState(); buildStats(); var y3=window.scrollY; renderTimeline(); renderPlan(); window.scrollTo(0,y3); }
   else if(act==="planremove"){ if(state[id]) state[id].status=""; saveState(); buildStats(); var y4=window.scrollY; renderPlan(); renderTimeline(); window.scrollTo(0,y4); }
