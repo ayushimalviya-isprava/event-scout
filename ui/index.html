@@ -4,64 +4,158 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Event Scout — NDS · Nov 2026 → Nov 2027</title>
-<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<script>
-  // On-screen error catcher so the page can never silently blank again.
-  window.addEventListener('error', function (e) {
-    var r = document.getElementById('root');
-    if (r) r.innerHTML = '<pre style="white-space:pre-wrap;color:#fb7185;font:13px/1.5 ui-monospace,monospace;padding:32px;max-width:760px;margin:40px auto">⚠ ' +
-      (e.message || e.error || 'Script error') + '\n\n' + ((e.error && e.error.stack) || '') + '</pre>';
-  });
-
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  html,body,#root{height:100%}
-  body{background:#08080b;color:#e7e5e4;font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-  .display{font-family:'Fraunces',Georgia,serif}
+  :root{
+    --bg:#08080b; --panel:#0d0d11; --ink:#e7e5e4; --muted:#a1a1aa; --dim:#71717a;
+    --line:rgba(255,255,255,.07); --gold:#e3b341; --silver:#9fb3c8; --slate:#6b7280;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;line-height:1.5}
+  .display{font-family:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,'Times New Roman',serif;letter-spacing:-.01em}
   ::-webkit-scrollbar{width:10px;height:10px}
   ::-webkit-scrollbar-thumb{background:#26262b;border-radius:8px}
   ::-webkit-scrollbar-track{background:transparent}
+  a{color:inherit;text-decoration:none}
   .grain:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.035;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-  @keyframes esFadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-  @keyframes esFade{from{opacity:0}to{opacity:1}}
-  .es-card-in{animation:esFadeUp .5s cubic-bezier(.22,1,.36,1) both}
-  .es-lift{transition:transform .25s ease, box-shadow .25s ease}
-  .es-lift:hover{transform:translateY(-3px)}
-  .es-reveal{animation:esFade .3s ease both}
+
+  .wrap{position:relative;z-index:1;max-width:1040px;margin:0 auto;padding:0 20px 120px}
+  @media(min-width:640px){.wrap{padding:0 32px 120px}}
+
+  /* hero */
+  .eyebrow{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:rgba(227,179,65,.7)}
+  .eyebrow .rule{width:26px;height:1px;background:rgba(227,179,65,.4)}
+  h1{font-size:clamp(40px,7vw,62px);margin:16px 0 0;line-height:1.04;color:#f4f3f1}
+  .sub{color:var(--muted);margin-top:12px;max-width:560px;font-size:15px}
+  .sub .q{color:var(--dim)}
+  .stats{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:22px;font-size:14px;color:var(--dim)}
+  .stats b{color:var(--ink)}
+
+  /* controls */
+  .controls{position:sticky;top:0;z-index:20;margin:28px -20px 0;padding:12px 20px;
+    background:rgba(8,8,11,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  @media(min-width:640px){.controls{margin:28px -32px 0;padding:12px 32px}}
+  .search{width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);
+    border-radius:999px;padding:10px 16px;color:var(--ink);font-size:14px;outline:none}
+  .search::placeholder{color:#52525b}
+  .search:focus{border-color:rgba(227,179,65,.4)}
+  .chiprow{display:flex;gap:8px;align-items:center;overflow-x:auto;padding:12px 0 2px}
+  .chiprow::-webkit-scrollbar{height:0}
+  .sep{width:1px;height:20px;background:rgba(255,255,255,.1);margin:0 4px;flex:0 0 auto}
+  .chip{flex:0 0 auto;font-size:12px;padding:6px 13px;border-radius:999px;border:1px solid #27272a;
+    background:transparent;color:var(--muted);cursor:pointer;white-space:nowrap;transition:.15s}
+  .chip:hover{color:var(--ink);border-color:#3f3f46}
+  .chip.active{color:#0a0a0a;font-weight:600;border-color:transparent}
+  .chip.active{background:#e7e5e4}
+  .chip[data-val="1"].active{background:var(--gold)} .chip[data-val="2"].active{background:var(--silver)}
+  .chip[data-val="3"].active{background:var(--slate);color:#fff}
+  .chip[data-act="shortlist"].active{background:var(--gold)}
+  .chip.catchip .cdot{display:inline-block;width:7px;height:7px;border-radius:999px;margin-right:5px;vertical-align:middle}
+
+  /* timeline */
+  .month{margin-top:38px}
+  .mhead{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+  .mhead h2{font-size:20px;margin:0;color:#d6d3d1}
+  .mhead .ct{font-size:12px;color:#52525b}
+  .mhead .ln{flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.1),transparent)}
+  .grid{display:grid;grid-template-columns:1fr;gap:16px}
+  @media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+
+  /* card */
+  .card{position:relative;border-radius:16px;background:var(--panel);border:1px solid rgba(255,255,255,.06);
+    padding:20px;overflow:hidden;animation:fadeUp .45s cubic-bezier(.22,1,.36,1) both;transition:transform .25s ease}
+  .card:hover{transform:translateY(-3px)}
+  .card:before{content:"";position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,var(--accent),transparent 70%)}
+  .t1{--accent:var(--gold);--glow:rgba(227,179,65,.16)}
+  .t2{--accent:var(--silver);--glow:rgba(159,179,200,.12)}
+  .t3{--accent:var(--slate);--glow:rgba(107,114,128,.10)}
+  .card{box-shadow:0 20px 44px -30px var(--glow)}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+  .crow{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .pills{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .pill{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:500;border:1px solid}
+  .star{background:none;border:none;cursor:pointer;font-size:18px;line-height:1;color:#3f3f46;transition:transform .15s}
+  .star:hover{transform:scale(1.2)} .star.on{color:var(--gold)}
+  .cname{font-size:21px;line-height:1.18;margin:12px 0 0;color:#f0eeec}
+  .meta{display:flex;align-items:center;gap:12px;margin-top:8px;font-size:13.5px;color:var(--muted);flex-wrap:wrap}
+  .meta .d{color:#e7e5e4;font-weight:600} .meta .tba{color:#52525b;font-weight:400}
+  .meta .conf{display:inline-flex;align-items:center;gap:6px}
+  .meta .cdot{width:7px;height:7px;border-radius:999px;display:inline-block}
+  .city{font-size:13px;color:var(--muted);margin-top:2px}
+  .verdict{font-size:13.5px;color:rgba(231,229,228,.9);margin:12px 0 0}
+  .details{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06);font-size:13px;display:none;animation:fade .25s ease both}
+  .details.open{display:block}
+  .details .k{color:#52525b} .details .v{color:#d6d3d1}
+  .details div{margin-bottom:6px}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .cfoot{display:flex;align-items:center;justify-content:space-between;margin-top:16px}
+  .lbtn{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:0;margin-right:14px}
+  .lbtn:hover{color:var(--ink)}
+  .src{font-size:12px;color:#52525b} .src:hover{color:rgba(227,179,65,.9)}
+  .statusbtn{font-size:12px;font-weight:500;border-radius:999px;padding:5px 13px;border:1px solid #27272a;background:transparent;color:var(--dim);cursor:pointer}
+
+  .empty{text-align:center;padding:90px 0;color:#52525b}
+  footer{margin-top:64px;padding-top:24px;border-top:1px solid var(--line);font-size:12px;color:#52525b;line-height:1.7}
 </style>
 </head>
 <body class="grain">
-<div id="root"></div>
-<script type="text/babel" data-presets="react">
-const { useState, useMemo, useEffect } = React;
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><span class="rule"></span> Chief of Staff · Network Strategy</div>
+    <h1 class="display">Event Scout</h1>
+    <p class="sub">A ruthlessly filtered radar of the rooms worth NDS's time — real estate, AI, capital &amp; the India–US corridor.
+      <span class="q">Window: Nov 2026 → Nov 2027.</span></p>
+    <div class="stats" id="stats"></div>
+  </header>
 
-/* Lightweight motion shim — no external animation lib. Entrance/hover handled in CSS.
-   Strips framer-style props so existing <motion.x> markup just renders the plain tag. */
-const motion = new Proxy({}, { get: (_, tag) => React.forwardRef((p, ref) => {
-  const { initial, animate, exit, transition, whileHover, whileTap, variants, layout, layoutId, ...rest } = p;
-  return React.createElement(tag, { ref, ...rest });
-}) });
-const AnimatePresence = ({ children }) => children;
+  <div class="controls">
+    <input class="search" id="search" type="text" placeholder="Search events, cities…" />
+    <div class="chiprow" id="chips"></div>
+  </div>
 
-/* ---------------- DATA ----------------
-   Pre-judge estimates. Dates tagged by confidence; the watcher + Claude judge
-   pass firm these up. `tba:true` = month known, exact dates not yet announced. */
-const CATS = {
-  realestate: { label: "Real Estate", dot: "#34d399" },
-  ai:         { label: "AI",          dot: "#a78bfa" },
-  tech:       { label: "Tech",        dot: "#38bdf8" },
-  capital:    { label: "Capital",     dot: "#e3b341" },
-  diaspora:   { label: "India–US",    dot: "#fb7185" },
-  gated:      { label: "Gated",       dot: "#a1a1aa" },
+  <main id="timeline"></main>
+
+  <footer>
+    Dates are pre-judge estimates tagged by confidence (Confirmed / Likely / Unconfirmed). The Apps Script watcher diffs each
+    source's date page; Claude's judge pass firms up dates, tiers &amp; verdicts. Attendee profiles are sourced or marked
+    “typical profile” — never invented. Your plan &amp; stars are saved locally in this browser. Fully self-contained — no network needed.
+  </footer>
+</div>
+
+<script>
+/* ---------------- DATA ---------------- */
+var CATS = {
+  realestate:{label:"Real Estate",dot:"#34d399"},
+  ai:{label:"AI",dot:"#a78bfa"},
+  tech:{label:"Tech",dot:"#38bdf8"},
+  capital:{label:"Capital",dot:"#e3b341"},
+  diaspora:{label:"India–US",dot:"#fb7185"},
+  gated:{label:"Gated",dot:"#a1a1aa"}
 };
+var TIER_META = {
+  1:{label:"Tier 1",accent:"#e3b341"},
+  2:{label:"Tier 2",accent:"#9fb3c8"},
+  3:{label:"Tier 3",accent:"#6b7280"}
+};
+var CONF_META = {
+  Confirmed:{c:"#34d399",t:"Confirmed"},
+  Likely:{c:"#e3b341",t:"Likely"},
+  Unconfirmed:{c:"#9ca3af",t:"Unconfirmed"}
+};
+var STATUS_CYCLE = ["","interested","booked","skip"];
+var STATUS_META = {
+  interested:{label:"Interested",c:"#e3b341"},
+  booked:{label:"Booked",c:"#34d399"},
+  skip:{label:"Skip",c:"#71717a"}
+};
+var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
-const EVENTS = [
+var EVENTS = [
   { id:"nar-nxt-26", name:"NAR NXT", cat:"realestate", tier:3, start:"2026-11-13", end:"2026-11-15", tba:true, conf:"Unconfirmed", city:"Houston, TX",
     cost:"~$300–800", access:"Ticketed", verdict:"Skip — 20k+ agents, junior-heavy; nothing he can't get from a podcast.",
     room:"Residential agents & brokers at scale; few principals.", url:"https://www.narnxt.realtor/" },
@@ -150,231 +244,145 @@ const EVENTS = [
     room:"Residential agents & brokers.", url:"https://www.narnxt.realtor/" },
   { id:"cretech-ny-27", name:"CREtech New York", cat:"realestate", tier:3, start:"2027-11-10", tba:true, conf:"Unconfirmed", city:"New York, NY",
     cost:"~$1,500", access:"Ticketed", verdict:"Monitor — structurally a trade show (~3,000, 72% VP+, 200 sponsors); useful for deal-flow, not peer relationships.",
-    room:"~3,000 attendees, 72% VP+, 200 sponsors (organizer-sourced).", url:"https://discover.cretech.com/cretech-new-york" },
+    room:"~3,000 attendees, 72% VP+, 200 sponsors (organizer-sourced).", url:"https://discover.cretech.com/cretech-new-york" }
 ];
 
-const TIER_META = {
-  1: { label:"Tier 1", sub:"Clears the trip alone", accent:"#e3b341", glow:"rgba(227,179,65,.16)" },
-  2: { label:"Tier 2", sub:"Worth it if in region", accent:"#9fb3c8", glow:"rgba(159,179,200,.12)" },
-  3: { label:"Tier 3", sub:"Optional / monitor", accent:"#6b7280", glow:"rgba(107,114,128,.10)" },
-};
-const CONF_META = {
-  Confirmed:   { c:"#34d399", t:"Confirmed" },
-  Likely:      { c:"#e3b341", t:"Likely" },
-  Unconfirmed: { c:"#9ca3af", t:"Unconfirmed" },
-};
-const STATUS_CYCLE = ["", "interested", "booked", "skip"];
-const STATUS_META = {
-  interested: { label:"Interested", c:"#e3b341" },
-  booked:     { label:"Booked",     c:"#34d399" },
-  skip:       { label:"Skip",       c:"#71717a" },
-};
+/* ---------------- STATE ---------------- */
+var LS_KEY="eventScout.v1";
+function loadState(){ try{ return JSON.parse(localStorage.getItem(LS_KEY))||{}; }catch(e){ return {}; } }
+function saveState(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
+var state = loadState();
+var openSet = {};
+var filters = { tier:0, cat:"all", q:"", shortlistOnly:false, hideSkip:false };
 
-const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-function monthKey(iso){ const [y,m]=iso.split("-"); return `${y}-${m}`; }
-function monthLabel(iso){ const [y,m]=iso.split("-"); return `${MONTHS[+m-1]} ${y}`; }
-function dayLabel(e){
-  const d=new Date(e.start+"T00:00:00");
-  const s=`${MONTHS[d.getMonth()]} ${d.getDate()}`;
-  if(e.end){ const ed=new Date(e.end+"T00:00:00"); return `${s}–${ed.getDate()}`; }
+/* ---------------- HELPERS ---------------- */
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function statusOf(id){ return (state[id]&&state[id].status)||""; }
+function starOf(id){ return !!(state[id]&&state[id].starred); }
+function mkey(iso){ return iso.slice(0,7); }
+function mlabel(iso){ var p=iso.split("-"); return MONTHS[(+p[1])-1]+" "+p[0]; }
+function dlabel(e){
+  var a=e.start.split("-").map(Number);
+  var s=MONTHS[a[1]-1]+" "+a[2];
+  if(e.end){ var b=e.end.split("-").map(Number); s+="–"+b[2]; }
   return s;
 }
 
-/* ---------------- PERSISTENCE ---------------- */
-const LS_KEY="eventScout.v1";
-function loadState(){ try{ return JSON.parse(localStorage.getItem(LS_KEY))||{}; }catch(e){ return {}; } }
-function saveState(s){ try{ localStorage.setItem(LS_KEY, JSON.stringify(s)); }catch(e){} }
-
-/* ---------------- COMPONENTS ---------------- */
-function Pill({children, color, soft}){
-  return <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium tracking-wide"
-    style={{ color, background: soft||"transparent", border:`1px solid ${color}33` }}>{children}</span>;
+/* ---------------- RENDER ---------------- */
+function buildChips(){
+  var html="";
+  html+='<button class="chip" data-act="tier" data-val="0">All tiers</button>';
+  html+='<button class="chip" data-act="tier" data-val="1">Tier 1</button>';
+  html+='<button class="chip" data-act="tier" data-val="2">Tier 2</button>';
+  html+='<button class="chip" data-act="tier" data-val="3">Tier 3</button>';
+  html+='<span class="sep"></span>';
+  html+='<button class="chip" data-act="cat" data-val="all">All</button>';
+  for(var k in CATS){
+    html+='<button class="chip catchip" data-act="cat" data-val="'+k+'"><span class="cdot" style="background:'+CATS[k].dot+'"></span>'+CATS[k].label+'</button>';
+  }
+  html+='<span class="sep"></span>';
+  html+='<button class="chip" data-act="shortlist">★ Top 6</button>';
+  html+='<button class="chip" data-act="hideskip">Hide skips</button>';
+  document.getElementById("chips").innerHTML=html;
+  syncChips();
+}
+function syncChips(){
+  var i,els=document.querySelectorAll('[data-act="tier"]');
+  for(i=0;i<els.length;i++) els[i].classList.toggle("active", Number(els[i].dataset.val)===filters.tier);
+  els=document.querySelectorAll('[data-act="cat"]');
+  for(i=0;i<els.length;i++) els[i].classList.toggle("active", els[i].dataset.val===filters.cat);
+  document.querySelector('[data-act="shortlist"]').classList.toggle("active", filters.shortlistOnly);
+  document.querySelector('[data-act="hideskip"]').classList.toggle("active", filters.hideSkip);
 }
 
-function EventCard({e, user, onCycle, onStar}){
-  const [open,setOpen]=useState(false);
-  const tm=TIER_META[e.tier], cm=CONF_META[e.conf], cat=CATS[e.cat];
-  const st=user.status, starred=user.starred;
-  return (
-    <motion.div layout initial={{opacity:0,y:14}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}}
-      transition={{duration:.4,ease:[.22,1,.36,1]}} whileHover={{y:-3}}
-      className="es-card-in es-lift relative rounded-2xl p-[1px] overflow-hidden"
-      style={{ background:`linear-gradient(135deg, ${tm.accent}40, transparent 55%)` }}>
-      <div className="rounded-2xl bg-[#0d0d11]/90 backdrop-blur-sm border border-white/[0.06] p-5"
-        style={{ boxShadow:`0 1px 0 0 rgba(255,255,255,.03) inset, 0 20px 40px -28px ${tm.glow}` }}>
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-2 flex-wrap">
-            <Pill color={tm.accent} soft={tm.glow}>{tm.label}</Pill>
-            <Pill color={cat.dot}><span className="w-1.5 h-1.5 rounded-full" style={{background:cat.dot}}></span>{cat.label}</Pill>
-            {e.shortlist && <Pill color="#e3b341" soft="rgba(227,179,65,.14)">★ Top 6</Pill>}
-          </div>
-          <button onClick={()=>onStar(e.id)} className="text-lg leading-none transition-transform hover:scale-125"
-            style={{color: starred?"#e3b341":"#3f3f46"}} title="Star">★</button>
-        </div>
-
-        <h3 className="display text-[22px] leading-tight mt-3 text-stone-100">{e.name}</h3>
-
-        <div className="flex items-center gap-3 mt-2 text-sm text-stone-400">
-          <span className="text-stone-200 font-medium">{dayLabel(e)}{e.tba && <span className="text-stone-500 font-normal"> · dates TBA</span>}</span>
-          <span className="inline-flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full" style={{background:cm.c}}></span>{cm.t}</span>
-        </div>
-        <div className="text-sm text-stone-400 mt-0.5">{e.city}</div>
-
-        <p className="text-[13.5px] text-stone-300/90 mt-3 leading-relaxed">{e.verdict}</p>
-
-        <AnimatePresence>
-        {open && (
-          <motion.div className="es-reveal overflow-hidden">
-            <div className="mt-3 pt-3 border-t border-white/[0.06] space-y-1.5 text-[13px]">
-              <div><span className="text-stone-500">Who's in the room · </span><span className="text-stone-300">{e.room}</span></div>
-              <div><span className="text-stone-500">Access · </span><span className="text-stone-300">{e.access}</span></div>
-              <div><span className="text-stone-500">Cost · </span><span className="text-stone-300">{e.cost}</span></div>
-            </div>
-          </motion.div>
-        )}
-        </AnimatePresence>
-
-        <div className="flex items-center justify-between mt-4">
-          <div className="flex items-center gap-2">
-            <button onClick={()=>setOpen(o=>!o)} className="text-xs text-stone-400 hover:text-stone-200 transition-colors">
-              {open?"Less":"Details"}
-            </button>
-            {e.url && <a href={e.url} target="_blank" rel="noreferrer" className="text-xs text-stone-500 hover:text-amber-300/90 transition-colors">Source ↗</a>}
-          </div>
-          <button onClick={()=>onCycle(e.id)}
-            className="text-xs font-medium rounded-full px-3 py-1 border transition-colors"
-            style={ st
-              ? { color:STATUS_META[st].c, borderColor:`${STATUS_META[st].c}55`, background:`${STATUS_META[st].c}14` }
-              : { color:"#71717a", borderColor:"#27272a" } }>
-            {st ? STATUS_META[st].label : "Add to plan"}
-          </button>
-        </div>
-      </div>
-    </motion.div>
-  );
+function buildStats(){
+  var c={t1:0,t2:0,t3:0};
+  EVENTS.forEach(function(e){ c["t"+e.tier]++; });
+  var planned=0; for(var k in state){ var s=state[k].status; if(s&&s!=="skip") planned++; }
+  document.getElementById("stats").innerHTML=
+    'Tracking <b>'+EVENTS.length+'</b> events'+
+    '<span style="color:'+TIER_META[1].accent+'">● '+c.t1+' Tier 1</span>'+
+    '<span style="color:'+TIER_META[2].accent+'">● '+c.t2+' Tier 2</span>'+
+    '<span style="color:'+TIER_META[3].accent+'">● '+c.t3+' Tier 3</span>'+
+    '<span>In plan: <b>'+planned+'</b></span>';
 }
 
-function App(){
-  const [state,setState]=useState(loadState);
-  const [tier,setTier]=useState(0);          // 0 = all
-  const [cat,setCat]=useState("all");
-  const [q,setQ]=useState("");
-  const [shortlistOnly,setShortlistOnly]=useState(false);
-  const [hideSkip,setHideSkip]=useState(false);
-
-  useEffect(()=>saveState(state),[state]);
-  const user=(id)=>state[id]||{};
-  const cycle=(id)=>setState(s=>{ const cur=(s[id]&&s[id].status)||""; const ni=(STATUS_CYCLE.indexOf(cur)+1)%STATUS_CYCLE.length;
-    return {...s,[id]:{...s[id],status:STATUS_CYCLE[ni]}}; });
-  const star=(id)=>setState(s=>({...s,[id]:{...s[id],starred:!(s[id]&&s[id].starred)}}));
-
-  const filtered=useMemo(()=>{
-    return EVENTS.filter(e=>{
-      if(tier && e.tier!==tier) return false;
-      if(cat!=="all" && e.cat!==cat) return false;
-      if(shortlistOnly && !e.shortlist) return false;
-      if(hideSkip && (user(e.id).status==="skip")) return false;
-      if(q){ const s=q.toLowerCase(); if(!(e.name.toLowerCase().includes(s)||e.city.toLowerCase().includes(s)||CATS[e.cat].label.toLowerCase().includes(s))) return false; }
-      return true;
-    }).sort((a,b)=>a.start.localeCompare(b.start));
-  },[tier,cat,q,shortlistOnly,hideSkip,state]);
-
-  const groups=useMemo(()=>{
-    const m={}; filtered.forEach(e=>{ const k=monthKey(e.start); (m[k]=m[k]||[]).push(e); });
-    return Object.keys(m).sort().map(k=>({k,label:monthLabel(filtered.find(e=>monthKey(e.start)===k).start),items:m[k]}));
-  },[filtered]);
-
-  const counts=useMemo(()=>({
-    t1:EVENTS.filter(e=>e.tier===1).length, t2:EVENTS.filter(e=>e.tier===2).length, t3:EVENTS.filter(e=>e.tier===3).length,
-    planned:Object.values(state).filter(v=>v.status&&v.status!=="skip").length,
-  }),[state]);
-
-  const Chip=({active,onClick,children,color})=>(
-    <button onClick={onClick}
-      className="text-xs px-3 py-1.5 rounded-full border transition-all whitespace-nowrap"
-      style={ active
-        ? { color:"#0a0a0a", background:color||"#e7e5e4", borderColor:"transparent", fontWeight:600 }
-        : { color:"#a1a1aa", borderColor:"#27272a", background:"transparent" } }>{children}</button>
-  );
-
-  return (
-    <div className="relative z-10 max-w-5xl mx-auto px-5 sm:px-8 pb-28">
-      {/* HERO */}
-      <header className="pt-14 pb-8">
-        <div className="flex items-center gap-2 text-[11px] tracking-[0.25em] uppercase text-amber-300/70">
-          <span className="w-6 h-px bg-amber-300/40"></span> Chief of Staff · Network Strategy
-        </div>
-        <h1 className="display text-5xl sm:text-6xl mt-4 text-stone-100 leading-[1.05]">Event Scout</h1>
-        <p className="text-stone-400 mt-3 max-w-xl text-[15px] leading-relaxed">
-          A ruthlessly filtered radar of the rooms worth NDS's time — real estate, AI, capital & the India–US corridor.
-          <span className="text-stone-500"> Window: Nov 2026 → Nov 2027.</span>
-        </p>
-        <div className="flex flex-wrap gap-x-6 gap-y-2 mt-6 text-sm">
-          <span className="text-stone-500">Tracking <b className="text-stone-200">{EVENTS.length}</b> events</span>
-          <span style={{color:TIER_META[1].accent}}>● {counts.t1} Tier 1</span>
-          <span style={{color:TIER_META[2].accent}}>● {counts.t2} Tier 2</span>
-          <span style={{color:TIER_META[3].accent}}>● {counts.t3} Tier 3</span>
-          <span className="text-stone-500">In plan: <b className="text-stone-200">{counts.planned}</b></span>
-        </div>
-      </header>
-
-      {/* CONTROLS */}
-      <div className="sticky top-0 z-20 -mx-5 sm:-mx-8 px-5 sm:px-8 py-3 bg-[#08080b]/85 backdrop-blur-md border-b border-white/[0.06]">
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-2">
-            <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Search events, cities…"
-              className="flex-1 bg-white/[0.03] border border-white/10 rounded-full px-4 py-2 text-sm text-stone-200 placeholder:text-stone-600 focus:outline-none focus:border-amber-300/40"/>
-          </div>
-          <div className="flex items-center gap-2 overflow-x-auto pb-1">
-            <Chip active={tier===0} onClick={()=>setTier(0)}>All tiers</Chip>
-            <Chip active={tier===1} onClick={()=>setTier(1)} color={TIER_META[1].accent}>Tier 1</Chip>
-            <Chip active={tier===2} onClick={()=>setTier(2)} color={TIER_META[2].accent}>Tier 2</Chip>
-            <Chip active={tier===3} onClick={()=>setTier(3)} color={TIER_META[3].accent}>Tier 3</Chip>
-            <span className="w-px h-5 bg-white/10 mx-1 shrink-0"></span>
-            <Chip active={cat==="all"} onClick={()=>setCat("all")}>All</Chip>
-            {Object.entries(CATS).map(([k,v])=>(
-              <Chip key={k} active={cat===k} onClick={()=>setCat(k)} color={v.dot}>{v.label}</Chip>
-            ))}
-            <span className="w-px h-5 bg-white/10 mx-1 shrink-0"></span>
-            <Chip active={shortlistOnly} onClick={()=>setShortlistOnly(v=>!v)} color="#e3b341">★ Top 6</Chip>
-            <Chip active={hideSkip} onClick={()=>setHideSkip(v=>!v)}>Hide skips</Chip>
-          </div>
-        </div>
-      </div>
-
-      {/* TIMELINE */}
-      <main className="mt-8">
-        {groups.length===0 && (
-          <div className="text-center py-24 text-stone-600">No events match. Loosen the filters.</div>
-        )}
-        {groups.map(g=>(
-          <section key={g.k} className="mb-10">
-            <div className="flex items-center gap-4 mb-4">
-              <h2 className="display text-xl text-stone-300">{g.label}</h2>
-              <span className="text-xs text-stone-600">{g.items.length} event{g.items.length>1?"s":""}</span>
-              <div className="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent"></div>
-            </div>
-            <motion.div layout className="grid sm:grid-cols-2 gap-4">
-              <AnimatePresence>
-                {g.items.map(e=>(
-                  <EventCard key={e.id} e={e} user={user(e.id)} onCycle={cycle} onStar={star}/>
-                ))}
-              </AnimatePresence>
-            </motion.div>
-          </section>
-        ))}
-      </main>
-
-      <footer className="mt-16 pt-6 border-t border-white/[0.06] text-xs text-stone-600 leading-relaxed">
-        Dates are pre-judge estimates tagged by confidence (Confirmed / Likely / Unconfirmed). The Apps Script watcher
-        diffs each source's date page; Claude's judge pass firms up dates, tiers & verdicts. Attendee profiles are
-        sourced or marked “typical profile” — never invented. Your plan & stars are saved locally in this browser.
-      </footer>
-    </div>
-  );
+function passes(e){
+  if(filters.tier && e.tier!==filters.tier) return false;
+  if(filters.cat!=="all" && e.cat!==filters.cat) return false;
+  if(filters.shortlistOnly && !e.shortlist) return false;
+  if(filters.hideSkip && statusOf(e.id)==="skip") return false;
+  if(filters.q){ var s=filters.q; if((e.name+" "+e.city+" "+CATS[e.cat].label).toLowerCase().indexOf(s)<0) return false; }
+  return true;
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+function cardHTML(e){
+  var tm=TIER_META[e.tier], cm=CONF_META[e.conf], cat=CATS[e.cat];
+  var st=statusOf(e.id), open=!!openSet[e.id];
+  var pills='<span class="pill" style="color:'+tm.accent+';background:rgba(255,255,255,.02);border-color:'+tm.accent+'33">'+tm.label+'</span>'+
+    '<span class="pill" style="color:'+cat.dot+';border-color:'+cat.dot+'33"><span style="width:6px;height:6px;border-radius:50%;background:'+cat.dot+'"></span>'+cat.label+'</span>'+
+    (e.shortlist?'<span class="pill" style="color:#e3b341;background:rgba(227,179,65,.14);border-color:#e3b34133">★ Top 6</span>':'');
+  var statusBtn = st
+    ? '<button class="statusbtn" data-act="status" data-id="'+e.id+'" style="color:'+STATUS_META[st].c+';border-color:'+STATUS_META[st].c+'55;background:'+STATUS_META[st].c+'14">'+STATUS_META[st].label+'</button>'
+    : '<button class="statusbtn" data-act="status" data-id="'+e.id+'">Add to plan</button>';
+  return '<div class="card t'+e.tier+'">'+
+      '<div class="crow"><div class="pills">'+pills+'</div>'+
+        '<button class="star'+(starOf(e.id)?' on':'')+'" data-act="star" data-id="'+e.id+'" title="Star">★</button></div>'+
+      '<h3 class="cname display">'+esc(e.name)+'</h3>'+
+      '<div class="meta"><span class="d">'+dlabel(e)+(e.tba?'<span class="tba"> · dates TBA</span>':'')+'</span>'+
+        '<span class="conf"><span class="cdot" style="background:'+cm.c+'"></span>'+cm.t+'</span></div>'+
+      '<div class="city">'+esc(e.city)+'</div>'+
+      '<p class="verdict">'+esc(e.verdict)+'</p>'+
+      '<div class="details'+(open?' open':'')+'">'+
+        '<div><span class="k">Who’s in the room · </span><span class="v">'+esc(e.room)+'</span></div>'+
+        '<div><span class="k">Access · </span><span class="v">'+esc(e.access)+'</span></div>'+
+        '<div><span class="k">Cost · </span><span class="v">'+esc(e.cost)+'</span></div>'+
+      '</div>'+
+      '<div class="cfoot"><div>'+
+        '<button class="lbtn" data-act="details" data-id="'+e.id+'">'+(open?'Less':'Details')+'</button>'+
+        (e.url?'<a class="src" href="'+esc(e.url)+'" target="_blank" rel="noreferrer">Source ↗</a>':'')+
+      '</div>'+statusBtn+'</div>'+
+    '</div>';
+}
+
+function renderTimeline(){
+  var list=EVENTS.filter(passes).slice().sort(function(a,b){ return a.start<b.start?-1:a.start>b.start?1:0; });
+  var el=document.getElementById("timeline");
+  if(!list.length){ el.innerHTML='<div class="empty">No events match. Loosen the filters.</div>'; return; }
+  var groups=[], idx={};
+  list.forEach(function(e){ var k=mkey(e.start); if(idx[k]==null){ idx[k]=groups.length; groups.push({k:k,label:mlabel(e.start),items:[]}); } groups[idx[k]].items.push(e); });
+  var html="";
+  groups.forEach(function(g){
+    html+='<section class="month"><div class="mhead"><h2 class="display">'+g.label+'</h2>'+
+      '<span class="ct">'+g.items.length+' event'+(g.items.length>1?'s':'')+'</span><span class="ln"></span></div><div class="grid">';
+    g.items.forEach(function(e){ html+=cardHTML(e); });
+    html+='</div></section>';
+  });
+  el.innerHTML=html;
+}
+
+/* ---------------- EVENTS / WIRING ---------------- */
+document.addEventListener("click", function(ev){
+  var t=ev.target.closest("[data-act]"); if(!t) return;
+  var act=t.dataset.act, id=t.dataset.id, val=t.dataset.val;
+  if(act==="tier"){ filters.tier=Number(val); syncChips(); renderTimeline(); }
+  else if(act==="cat"){ filters.cat=val; syncChips(); renderTimeline(); }
+  else if(act==="shortlist"){ filters.shortlistOnly=!filters.shortlistOnly; syncChips(); renderTimeline(); }
+  else if(act==="hideskip"){ filters.hideSkip=!filters.hideSkip; syncChips(); renderTimeline(); }
+  else if(act==="details"){ openSet[id]=!openSet[id]; var y=window.scrollY; renderTimeline(); window.scrollTo(0,y); }
+  else if(act==="star"){ state[id]=state[id]||{}; state[id].starred=!state[id].starred; saveState(); var y2=window.scrollY; renderTimeline(); window.scrollTo(0,y2); }
+  else if(act==="status"){ state[id]=state[id]||{}; var cur=state[id].status||""; state[id].status=STATUS_CYCLE[(STATUS_CYCLE.indexOf(cur)+1)%STATUS_CYCLE.length]; saveState(); buildStats(); var y3=window.scrollY; renderTimeline(); window.scrollTo(0,y3); }
+});
+document.getElementById("search").addEventListener("input", function(e){ filters.q=e.target.value.toLowerCase().trim(); renderTimeline(); });
+
+/* ---------------- BOOT ---------------- */
+try {
+  buildChips();
+  buildStats();
+  renderTimeline();
+} catch(err){
+  document.getElementById("timeline").innerHTML='<pre style="white-space:pre-wrap;color:#fb7185;padding:24px">⚠ '+(err&&err.message)+'\n\n'+(err&&err.stack)+'</pre>';
+}
 </script>
 </body>
 </html>
