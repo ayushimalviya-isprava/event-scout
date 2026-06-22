@@ -142,6 +142,23 @@
   .suggest{margin-top:14px;font-size:13.5px;color:hsl(var(--foreground)/.95);background:hsl(45 90% 60% / .07);border:1px solid hsl(45 90% 60% / .2);border-radius:10px;padding:9px 12px}
   .suggest .slabel{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);font-weight:700;margin-right:7px}
   .empty{text-align:center;padding:90px 0;color:hsl(var(--dim))}
+  /* my plan */
+  .plan{margin-top:26px}
+  .plan-card{border-radius:16px;border:1px solid hsl(var(--foreground)/.08);background:rgba(255,255,255,.02);backdrop-filter:blur(3px);padding:18px 20px}
+  .plan-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+  .plan-head h3{font-family:var(--font-display);font-size:18px;margin:0;font-weight:600}
+  .plan-meta{font-size:12.5px;color:hsl(var(--dim))}
+  .plan-empty{font-size:13.5px;color:hsl(var(--dim));margin-top:6px}
+  .plan-group{margin-top:14px}
+  .plan-gh{font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;margin-bottom:4px}
+  .plan-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-top:1px solid hsl(var(--foreground)/.06);font-size:13.5px;flex-wrap:wrap}
+  .pr-stars{flex:0 0 auto;transform:scale(.82);transform-origin:left center}
+  .pr-name{flex:1;min-width:150px;color:hsl(var(--foreground))}
+  .pr-date{color:hsl(var(--muted));font-size:12.5px}
+  .pr-cat{display:inline-flex;align-items:center;gap:5px;color:hsl(var(--muted));font-size:12px}
+  .pr-cat .cdot{width:7px;height:7px;border-radius:50%}
+  .pr-x{background:none;border:none;color:hsl(var(--dim));cursor:pointer;font-size:13px;padding:2px 6px;line-height:1}
+  .pr-x:hover{color:#fb7185}
   footer{margin-top:64px;padding-top:24px;border-top:1px solid hsl(var(--foreground)/.08);font-size:12px;color:hsl(var(--dim));line-height:1.7}
 
   /* category dropdown */
@@ -166,6 +183,7 @@
       <div class="nav-center">
         <button class="navlink" data-scroll="calendar">Calendar</button>
         <button class="navlink" data-rate="4.5">Top Rated</button>
+        <button class="navlink" data-scroll="plan">My Plan</button>
         <div style="position:relative">
           <button class="navlink" id="catBtn">Categories
             <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
@@ -202,6 +220,8 @@
     <p class="cal-sub">Every event rated out of 5 for fit to NDS's mandate, dated with a confidence tag, with a one-line suggestion. Built by a 3-day research loop across the open web, X &amp; official sources.</p>
     <div class="stats" id="stats"></div>
   </header>
+
+  <section id="plan" class="plan"></section>
 
   <div class="controls">
     <input class="search" id="search" type="text" placeholder="Search events, cities…" />
@@ -373,6 +393,37 @@ function renderTimeline(){
   el.innerHTML=html;
 }
 
+function planRow(e){
+  var cat=CATS[e.cat];
+  return '<div class="plan-row">'+
+    '<span class="pr-stars">'+starsHTML(e.rating||0)+'</span>'+
+    '<span class="pr-name">'+esc(e.name)+'</span>'+
+    '<span class="pr-date">'+dlabel(e)+(e.tba?' · TBA':'')+'</span>'+
+    '<span class="pr-cat"><span class="cdot" style="background:'+cat.dot+'"></span>'+cat.label+'</span>'+
+    (e.url?'<a class="src" href="'+esc(e.url)+'" target="_blank" rel="noreferrer" title="Source">↗</a>':'')+
+    '<button class="pr-x" data-act="planremove" data-id="'+e.id+'" title="Remove from plan">✕</button>'+
+  '</div>';
+}
+function renderPlan(){
+  var booked=[],interested=[],skip=[];
+  EVENTS.forEach(function(e){ var s=statusOf(e.id); if(s==="booked")booked.push(e); else if(s==="interested")interested.push(e); else if(s==="skip")skip.push(e); });
+  var byDate=function(a,b){ return a.start<b.start?-1:a.start>b.start?1:0; };
+  var el=document.getElementById("plan");
+  var group=function(label,color,arr){
+    if(!arr.length) return "";
+    return '<div class="plan-group"><div class="plan-gh" style="color:'+color+'">'+label+' · '+arr.length+'</div>'+
+      arr.slice().sort(byDate).map(planRow).join("")+'</div>';
+  };
+  var total=booked.length+interested.length+skip.length;
+  var head='<div class="plan-head"><h3 class="display">My Plan</h3>'+
+    (total?'<span class="plan-meta">'+booked.length+' booked · '+interested.length+' interested'+(skip.length?' · '+skip.length+' skipped':'')+'</span>':'')+'</div>';
+  if(!total){
+    el.innerHTML='<div class="plan-card">'+head+'<div class="plan-empty">Nothing saved yet — hit <b>Add to plan</b> on any event (Interested → Booked → Skip) and it lands here.</div></div>';
+    return;
+  }
+  el.innerHTML='<div class="plan-card">'+head+group("Booked","#34d399",booked)+group("Interested","#fcd34d",interested)+group("Skipped","#71717a",skip)+'</div>';
+}
+
 function scrollTo(id){ var el=document.getElementById(id); if(el) el.scrollIntoView({behavior:"smooth"}); }
 
 document.addEventListener("click", function(ev){
@@ -386,11 +437,12 @@ document.addEventListener("click", function(ev){
   else if(act==="cat"){ filters.cat=val; syncChips(); renderTimeline(); document.getElementById("catDD").classList.remove("open"); if(t.closest("#catDD")) scrollTo("calendar"); }
   else if(act==="hidelow"){ filters.hideLow=!filters.hideLow; syncChips(); renderTimeline(); }
   else if(act==="details"){ openSet[id]=!openSet[id]; var y=window.scrollY; renderTimeline(); window.scrollTo(0,y); }
-  else if(act==="status"){ state[id]=state[id]||{}; var cur=state[id].status||""; state[id].status=STATUS_CYCLE[(STATUS_CYCLE.indexOf(cur)+1)%STATUS_CYCLE.length]; saveState(); buildStats(); var y3=window.scrollY; renderTimeline(); window.scrollTo(0,y3); }
+  else if(act==="status"){ state[id]=state[id]||{}; var cur=state[id].status||""; state[id].status=STATUS_CYCLE[(STATUS_CYCLE.indexOf(cur)+1)%STATUS_CYCLE.length]; saveState(); buildStats(); var y3=window.scrollY; renderTimeline(); renderPlan(); window.scrollTo(0,y3); }
+  else if(act==="planremove"){ if(state[id]) state[id].status=""; saveState(); buildStats(); var y4=window.scrollY; renderPlan(); renderTimeline(); window.scrollTo(0,y4); }
 });
 document.getElementById("search").addEventListener("input", function(e){ filters.q=e.target.value.toLowerCase().trim(); renderTimeline(); });
 
-try { buildChips(); buildStats(); renderTimeline(); }
+try { buildChips(); buildStats(); renderPlan(); renderTimeline(); }
 catch(err){ document.getElementById("timeline").innerHTML='<pre style="white-space:pre-wrap;color:#fb7185;padding:24px">⚠ '+(err&&err.message)+'\n\n'+(err&&err.stack)+'</pre>'; }
 </script>
 </body>
