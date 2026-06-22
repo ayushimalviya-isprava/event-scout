@@ -10,6 +10,9 @@ mkdir -p pipeline
 STAMP="$(date '+%Y-%m-%d %H:%M:%S')"
 echo "=== refresh start $STAMP ===" >> pipeline/refresh.log
 
+# Optional pre-step: pull X leads via Grok/xAI (no-op if XAI_API_KEY is unset). Best-effort.
+node pipeline/grok-x.mjs >> pipeline/refresh.log 2>&1 || true
+
 claude -p "$(cat pipeline/PIPELINE_PROMPT.md)" \
   --permission-mode acceptEdits \
   --allowedTools "WebSearch,WebFetch,Read,Edit,Write,Bash" \

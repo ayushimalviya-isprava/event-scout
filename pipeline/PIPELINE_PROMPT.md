@@ -16,6 +16,9 @@ This runs every 3 days. Be a ruthless filter; default to SKIP. Do the four phase
   announcements, side-event/dinner invites, and "applications open" calls. **Public posts only
   — no logged-in scraping.** Signal is noisy; treat hits as leads and verify on the official
   site before listing anything.
+- **Grok/X leads:** if `pipeline/grok-leads.json` exists (written by the Grok pre-step from live X
+  search), read it as a lead list — but **verify each on its official site** before listing; treat
+  unverifiable leads as noise.
 - For each major conference, also search its **side-events / dinners** — often the real value.
 - Build a candidate list: every event already in events.js PLUS anything new that plausibly
   clears the bar. Note where each came from.

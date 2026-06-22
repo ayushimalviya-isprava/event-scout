@@ -3,3 +3,8 @@
 src/.clasp.json
 node_modules/
 .DS_Store
+
+# pipeline run artifacts
+pipeline/*.log
+pipeline/grok-leads.json
+pipeline/grok-leads.md

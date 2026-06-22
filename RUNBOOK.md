@@ -102,7 +102,20 @@ launchctl list | grep eventscout                                       # confirm
 
 ## What it can and can't source
 - ✅ Open web + official event sites + **publicly-indexed** LinkedIn/X posts (via web search).
-- ❌ Not logged-in LinkedIn/X feeds (blocked by their ToS / require paid API) — not scraped.
+- ✅ **X via Grok** (optional) — native live X search, the clean way to mine X.
+- ❌ Not logged-in LinkedIn/X feed scraping (blocked by their ToS / require paid API).
+
+## Optional: enable Grok/X leads
+The refresh runs `pipeline/grok-x.mjs` as a best-effort pre-step. It's a no-op unless you give it
+an xAI key:
+```
+# get a key at https://console.x.ai , then:
+export XAI_API_KEY=xai-...                 # add to your shell profile to persist
+# (for the launchd job, also add an EnvironmentVariables dict to the plist, or set it in run.sh)
+XAI_API_KEY=xai-... node ~/event-scout/pipeline/grok-x.mjs   # test by hand
+```
+It writes `pipeline/grok-leads.json`; the judge reads those leads and **verifies each on the official
+site** before listing. Verify the model id / live-search params against current xAI docs if it errors.
 
 ---
 ## Live state

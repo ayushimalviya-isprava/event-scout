@@ -96,6 +96,9 @@ Search indexes public LinkedIn/X posts; mine them for event announcements, side-
 invites, and "applications open" calls that never hit a normal event site.
 **Public posts only — NO logged-in feed scraping (their ToS / paid API forbid it).** Signal is
 noisy and often non-US; treat hits as leads and verify on the official site before listing.
+- **X access via Grok:** the cleanest path to X is the Grok pre-step (`pipeline/grok-x.mjs`), which
+  uses xAI's live X search (set `XAI_API_KEY`). Its leads land in `pipeline/grok-leads.json` for the
+  judge to verify. Web search scoped to `x.com` is the fallback when no key is set.
 - Scope searches to domains `linkedin.com` and `x.com` (use the search tool's domain filter).
 - Patterns: `site:linkedin.com/posts "AI in real estate" 2027` · `site:x.com "founder dinner" <city>`
   · `site:linkedin.com proptech summit 2027` · `site:x.com "applications open" AI summit 2027`
