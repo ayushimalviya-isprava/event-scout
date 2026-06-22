@@ -6,8 +6,15 @@
 <title>Event Scout — NDS · Nov 2026 → Nov 2027</title>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-<script src="https://unpkg.com/framer-motion@11.3.19/dist/framer-motion.js" crossorigin></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script>
+  // On-screen error catcher so the page can never silently blank again.
+  window.addEventListener('error', function (e) {
+    var r = document.getElementById('root');
+    if (r) r.innerHTML = '<pre style="white-space:pre-wrap;color:#fb7185;font:13px/1.5 ui-monospace,monospace;padding:32px;max-width:760px;margin:40px auto">⚠ ' +
+      (e.message || e.error || 'Script error') + '\n\n' + ((e.error && e.error.stack) || '') + '</pre>';
+  });
+
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,6 +28,12 @@
   ::-webkit-scrollbar-track{background:transparent}
   .grain:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.035;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  @keyframes esFadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @keyframes esFade{from{opacity:0}to{opacity:1}}
+  .es-card-in{animation:esFadeUp .5s cubic-bezier(.22,1,.36,1) both}
+  .es-lift{transition:transform .25s ease, box-shadow .25s ease}
+  .es-lift:hover{transform:translateY(-3px)}
+  .es-reveal{animation:esFade .3s ease both}
 </style>
 </head>
 <body class="grain">
@@ -28,13 +41,13 @@
 <script type="text/babel" data-presets="react">
 const { useState, useMemo, useEffect } = React;
 
-/* Framer Motion with graceful fallback so the page always renders */
-const FM = window.Motion || {};
-const motion = FM.motion || new Proxy({}, { get: (_, tag) => React.forwardRef((p, ref) => {
+/* Lightweight motion shim — no external animation lib. Entrance/hover handled in CSS.
+   Strips framer-style props so existing <motion.x> markup just renders the plain tag. */
+const motion = new Proxy({}, { get: (_, tag) => React.forwardRef((p, ref) => {
   const { initial, animate, exit, transition, whileHover, whileTap, variants, layout, layoutId, ...rest } = p;
   return React.createElement(tag, { ref, ...rest });
 }) });
-const AnimatePresence = FM.AnimatePresence || (({ children }) => children);
+const AnimatePresence = ({ children }) => children;
 
 /* ---------------- DATA ----------------
    Pre-judge estimates. Dates tagged by confidence; the watcher + Claude judge
@@ -185,7 +198,7 @@ function EventCard({e, user, onCycle, onStar}){
   return (
     <motion.div layout initial={{opacity:0,y:14}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}}
       transition={{duration:.4,ease:[.22,1,.36,1]}} whileHover={{y:-3}}
-      className="relative rounded-2xl p-[1px] overflow-hidden"
+      className="es-card-in es-lift relative rounded-2xl p-[1px] overflow-hidden"
       style={{ background:`linear-gradient(135deg, ${tm.accent}40, transparent 55%)` }}>
       <div className="rounded-2xl bg-[#0d0d11]/90 backdrop-blur-sm border border-white/[0.06] p-5"
         style={{ boxShadow:`0 1px 0 0 rgba(255,255,255,.03) inset, 0 20px 40px -28px ${tm.glow}` }}>
@@ -211,8 +224,7 @@ function EventCard({e, user, onCycle, onStar}){
 
         <AnimatePresence>
         {open && (
-          <motion.div initial={{opacity:0,height:0}} animate={{opacity:1,height:"auto"}} exit={{opacity:0,height:0}}
-            transition={{duration:.3}} className="overflow-hidden">
+          <motion.div className="es-reveal overflow-hidden">
             <div className="mt-3 pt-3 border-t border-white/[0.06] space-y-1.5 text-[13px]">
               <div><span className="text-stone-500">Who's in the room · </span><span className="text-stone-300">{e.room}</span></div>
               <div><span className="text-stone-500">Access · </span><span className="text-stone-300">{e.access}</span></div>
