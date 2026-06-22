@@ -50,9 +50,8 @@
   .chip:hover{color:var(--ink);border-color:#3f3f46}
   .chip.active{color:#0a0a0a;font-weight:600;border-color:transparent}
   .chip.active{background:#e7e5e4}
-  .chip[data-val="1"].active{background:var(--gold)} .chip[data-val="2"].active{background:var(--silver)}
-  .chip[data-val="3"].active{background:var(--slate);color:#fff}
-  .chip[data-act="shortlist"].active{background:var(--gold)}
+  .chip[data-act="rating"].active{background:var(--gold)}
+  .chip[data-act="hidelow"].active{background:var(--slate);color:#fff}
   .chip.catchip .cdot{display:inline-block;width:7px;height:7px;border-radius:999px;margin-right:5px;vertical-align:middle}
 
   /* timeline */
@@ -95,6 +94,11 @@
   .why{margin-top:11px;padding-top:10px;border-top:1px dashed rgba(255,255,255,.09)}
   .whyh{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#52525b;margin-bottom:7px}
   .why div{margin-bottom:5px} .why .wk{font-weight:600}
+  .stars{position:relative;display:inline-block;font-size:14px;letter-spacing:2px;line-height:1;white-space:nowrap}
+  .stars .sbg{color:#3a3a40} .stars .sfg{position:absolute;left:0;top:0;overflow:hidden;white-space:nowrap;color:#e3b341}
+  .rnum{font-size:12px;color:#e3b341;font-weight:600;margin-left:7px;vertical-align:middle}
+  .suggest{margin-top:14px;font-size:13.5px;color:#ecebe9;background:rgba(227,179,65,.07);border:1px solid rgba(227,179,65,.18);border-radius:10px;padding:9px 12px}
+  .suggest .slabel{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#e3b341;font-weight:700;margin-right:7px}
   @keyframes fade{from{opacity:0}to{opacity:1}}
   .cfoot{display:flex;align-items:center;justify-content:space-between;margin-top:16px}
   .lbtn{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:0;margin-right:14px}
@@ -124,9 +128,9 @@
   <main id="timeline"></main>
 
   <footer>
-    Dates are pre-judge estimates tagged by confidence (Confirmed / Likely / Unconfirmed). The Apps Script watcher diffs each
-    source's date page; Claude's judge pass firms up dates, tiers &amp; verdicts. Attendee profiles are sourced or marked
-    “typical profile” — never invented. Your plan &amp; stars are saved locally in this browser. Fully self-contained — no network needed.
+    Each event carries a ★/5 fit rating for NDS and a date-confidence tag (Confirmed / Likely / Predicted / Unconfirmed).
+    The 3-day pipeline firms up dates, ratings &amp; the one-line suggestion. Attendee profiles are sourced or marked
+    “typical profile” — never invented. Your plan is saved locally in this browser. Fully self-contained — no network needed.
   </footer>
 </div>
 
@@ -141,11 +145,9 @@ var CATS = {
   diaspora:{label:"India–US",dot:"#fb7185"},
   gated:{label:"Gated",dot:"#a1a1aa"}
 };
-var TIER_META = {
-  1:{label:"Tier 1",accent:"#e3b341"},
-  2:{label:"Tier 2",accent:"#9fb3c8"},
-  3:{label:"Tier 3",accent:"#6b7280"}
-};
+// rating (out of 5) → card accent + glow
+function ratingAccent(r){ return r>=4 ? {a:"#e3b341",g:"rgba(227,179,65,.16)"} : r>=3 ? {a:"#9fb3c8",g:"rgba(159,179,200,.12)"} : {a:"#6b7280",g:"rgba(107,114,128,.10)"}; }
+function starsHTML(r){ var pct=Math.max(0,Math.min(100,(r/5)*100)); return '<span class="stars" title="'+r+' / 5"><span class="sbg">★★★★★</span><span class="sfg" style="width:'+pct+'%">★★★★★</span></span><span class="rnum">'+(r||0).toFixed(1)+'</span>'; }
 var CONF_META = {
   Confirmed:{c:"#34d399",t:"Confirmed"},
   Likely:{c:"#e3b341",t:"Likely"},
@@ -169,7 +171,7 @@ function loadState(){ try{ return JSON.parse(localStorage.getItem(LS_KEY))||{}; 
 function saveState(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
 var state = loadState();
 var openSet = {};
-var filters = { tier:0, cat:"all", q:"", shortlistOnly:false, hideSkip:false };
+var filters = { minRating:0, cat:"all", q:"", hideLow:false };
 
 /* ---------------- HELPERS ---------------- */
 function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
@@ -187,69 +189,62 @@ function dlabel(e){
 /* ---------------- RENDER ---------------- */
 function buildChips(){
   var html="";
-  html+='<button class="chip" data-act="tier" data-val="0">All tiers</button>';
-  html+='<button class="chip" data-act="tier" data-val="1">Tier 1</button>';
-  html+='<button class="chip" data-act="tier" data-val="2">Tier 2</button>';
-  html+='<button class="chip" data-act="tier" data-val="3">Tier 3</button>';
+  html+='<button class="chip" data-act="rating" data-val="0">All</button>';
+  html+='<button class="chip" data-act="rating" data-val="4.5">4.5★+</button>';
+  html+='<button class="chip" data-act="rating" data-val="4">4★+</button>';
+  html+='<button class="chip" data-act="rating" data-val="3">3★+</button>';
   html+='<span class="sep"></span>';
   html+='<button class="chip" data-act="cat" data-val="all">All</button>';
   for(var k in CATS){
     html+='<button class="chip catchip" data-act="cat" data-val="'+k+'"><span class="cdot" style="background:'+CATS[k].dot+'"></span>'+CATS[k].label+'</button>';
   }
   html+='<span class="sep"></span>';
-  html+='<button class="chip" data-act="shortlist">★ Top 6</button>';
-  html+='<button class="chip" data-act="hideskip">Hide skips</button>';
+  html+='<button class="chip" data-act="hidelow">Hide low (≤2★)</button>';
   document.getElementById("chips").innerHTML=html;
   syncChips();
 }
 function syncChips(){
-  var i,els=document.querySelectorAll('[data-act="tier"]');
-  for(i=0;i<els.length;i++) els[i].classList.toggle("active", Number(els[i].dataset.val)===filters.tier);
+  var i,els=document.querySelectorAll('[data-act="rating"]');
+  for(i=0;i<els.length;i++) els[i].classList.toggle("active", Number(els[i].dataset.val)===filters.minRating);
   els=document.querySelectorAll('[data-act="cat"]');
   for(i=0;i<els.length;i++) els[i].classList.toggle("active", els[i].dataset.val===filters.cat);
-  document.querySelector('[data-act="shortlist"]').classList.toggle("active", filters.shortlistOnly);
-  document.querySelector('[data-act="hideskip"]').classList.toggle("active", filters.hideSkip);
+  document.querySelector('[data-act="hidelow"]').classList.toggle("active", filters.hideLow);
 }
 
 function buildStats(){
-  var c={t1:0,t2:0,t3:0};
-  EVENTS.forEach(function(e){ c["t"+e.tier]++; });
+  var n=EVENTS.length, sum=0, top=0;
+  EVENTS.forEach(function(e){ sum+=(e.rating||0); if((e.rating||0)>=4) top++; });
+  var avg=n?(sum/n).toFixed(1):"0";
   var planned=0; for(var k in state){ var s=state[k].status; if(s&&s!=="skip") planned++; }
   document.getElementById("stats").innerHTML=
-    'Tracking <b>'+EVENTS.length+'</b> events'+
-    '<span style="color:'+TIER_META[1].accent+'">● '+c.t1+' Tier 1</span>'+
-    '<span style="color:'+TIER_META[2].accent+'">● '+c.t2+' Tier 2</span>'+
-    '<span style="color:'+TIER_META[3].accent+'">● '+c.t3+' Tier 3</span>'+
+    'Tracking <b>'+n+'</b> events'+
+    '<span style="color:#e3b341">★ avg '+avg+'</span>'+
+    '<span style="color:#e3b341">'+top+' rated 4★+</span>'+
     '<span>In plan: <b>'+planned+'</b></span>'+
     (EVENTS_META.updated?'<span title="'+esc(EVENTS_META.note||"")+'">Updated <b>'+esc(EVENTS_META.updated)+'</b></span>':'');
 }
 
 function passes(e){
-  if(filters.tier && e.tier!==filters.tier) return false;
+  if(filters.minRating && (e.rating||0) < filters.minRating) return false;
   if(filters.cat!=="all" && e.cat!==filters.cat) return false;
-  if(filters.shortlistOnly && !e.shortlist) return false;
-  if(filters.hideSkip && statusOf(e.id)==="skip") return false;
+  if(filters.hideLow && (e.rating||0) <= 2) return false;
   if(filters.q){ var s=filters.q; if((e.name+" "+e.city+" "+CATS[e.cat].label).toLowerCase().indexOf(s)<0) return false; }
   return true;
 }
 
 function cardHTML(e){
-  var tm=TIER_META[e.tier], cm=CONF_META[e.conf], cat=CATS[e.cat];
+  var ra=ratingAccent(e.rating||0), cm=CONF_META[e.conf]||CONF_META.Unconfirmed, cat=CATS[e.cat];
   var st=statusOf(e.id), open=!!openSet[e.id];
-  var pills='<span class="pill" style="color:'+tm.accent+';background:rgba(255,255,255,.02);border-color:'+tm.accent+'33">'+tm.label+'</span>'+
-    '<span class="pill" style="color:'+cat.dot+';border-color:'+cat.dot+'33"><span style="width:6px;height:6px;border-radius:50%;background:'+cat.dot+'"></span>'+cat.label+'</span>'+
-    (e.shortlist?'<span class="pill" style="color:#e3b341;background:rgba(227,179,65,.14);border-color:#e3b34133">★ Top 6</span>':'');
+  var pills='<span class="pill" style="color:'+cat.dot+';border-color:'+cat.dot+'33"><span style="width:6px;height:6px;border-radius:50%;background:'+cat.dot+'"></span>'+cat.label+'</span>';
   var statusBtn = st
     ? '<button class="statusbtn" data-act="status" data-id="'+e.id+'" style="color:'+STATUS_META[st].c+';border-color:'+STATUS_META[st].c+'55;background:'+STATUS_META[st].c+'14">'+STATUS_META[st].label+'</button>'
     : '<button class="statusbtn" data-act="status" data-id="'+e.id+'">Add to plan</button>';
-  return '<div class="card t'+e.tier+'">'+
-      '<div class="crow"><div class="pills">'+pills+'</div>'+
-        '<button class="star'+(starOf(e.id)?' on':'')+'" data-act="star" data-id="'+e.id+'" title="Star">★</button></div>'+
+  return '<div class="card" style="--accent:'+ra.a+';--glow:'+ra.g+'">'+
+      '<div class="crow"><div class="pills">'+pills+'</div>'+starsHTML(e.rating||0)+'</div>'+
       '<h3 class="cname display">'+esc(e.name)+'</h3>'+
       '<div class="meta"><span class="d">'+dlabel(e)+(e.tba?'<span class="tba"> · dates TBA</span>':'')+'</span>'+
         '<span class="conf"><span class="cdot" style="background:'+cm.c+'"></span>'+cm.t+'</span></div>'+
       '<div class="city">'+esc(e.city)+'</div>'+
-      '<p class="verdict">'+esc(e.verdict)+'</p>'+
       '<div class="details'+(open?' open':'')+'">'+
         '<div><span class="k">Who’s in the room · </span><span class="v">'+esc(e.room)+'</span></div>'+
         '<div><span class="k">Access · </span><span class="v">'+esc(e.access)+'</span></div>'+
@@ -264,6 +259,7 @@ function cardHTML(e){
         '<button class="lbtn" data-act="details" data-id="'+e.id+'">'+(open?'Less':'Details')+'</button>'+
         (e.url?'<a class="src" href="'+esc(e.url)+'" target="_blank" rel="noreferrer">Source ↗</a>':'')+
       '</div>'+statusBtn+'</div>'+
+      (e.verdict?'<div class="suggest"><span class="slabel">Suggestion</span> '+esc(e.verdict)+'</div>':'')+
     '</div>';
 }
 
@@ -287,12 +283,10 @@ function renderTimeline(){
 document.addEventListener("click", function(ev){
   var t=ev.target.closest("[data-act]"); if(!t) return;
   var act=t.dataset.act, id=t.dataset.id, val=t.dataset.val;
-  if(act==="tier"){ filters.tier=Number(val); syncChips(); renderTimeline(); }
+  if(act==="rating"){ filters.minRating=Number(val); syncChips(); renderTimeline(); }
   else if(act==="cat"){ filters.cat=val; syncChips(); renderTimeline(); }
-  else if(act==="shortlist"){ filters.shortlistOnly=!filters.shortlistOnly; syncChips(); renderTimeline(); }
-  else if(act==="hideskip"){ filters.hideSkip=!filters.hideSkip; syncChips(); renderTimeline(); }
+  else if(act==="hidelow"){ filters.hideLow=!filters.hideLow; syncChips(); renderTimeline(); }
   else if(act==="details"){ openSet[id]=!openSet[id]; var y=window.scrollY; renderTimeline(); window.scrollTo(0,y); }
-  else if(act==="star"){ state[id]=state[id]||{}; state[id].starred=!state[id].starred; saveState(); var y2=window.scrollY; renderTimeline(); window.scrollTo(0,y2); }
   else if(act==="status"){ state[id]=state[id]||{}; var cur=state[id].status||""; state[id].status=STATUS_CYCLE[(STATUS_CYCLE.indexOf(cur)+1)%STATUS_CYCLE.length]; saveState(); buildStats(); var y3=window.scrollY; renderTimeline(); window.scrollTo(0,y3); }
 });
 document.getElementById("search").addEventListener("input", function(e){ filters.q=e.target.value.toLowerCase().trim(); renderTimeline(); });

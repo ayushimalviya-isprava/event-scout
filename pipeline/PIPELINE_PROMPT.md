@@ -30,7 +30,10 @@ This runs every 3 days. Be a ruthless filter; default to SKIP. Do the four phase
 
 ## Phase 3 — LABEL
 For each event set:
-- `tier`: 1 (clears the trip alone) / 2 (worth it if already in region) / 3 (monitor). Apply the bar.
+- `tier`: 1/2/3 internal judgment (still useful), but the UI surfaces `rating` instead.
+- `rating`: fit-for-NDS score out of 5, in 0.5 steps (the headline metric the calendar shows).
+  Rough anchor: 5 = clears the trip alone + top pick; 4–4.5 = strong; 3–3.5 = worth it if in region;
+  ≤2.5 = monitor/skip. Be honest; reserve 5 for the genuine bullseyes.
 - `conf` (date accuracy): **Confirmed** (official site states it) / **Likely** (strong pattern
   or secondary source) / **Predicted** (reliably recurring annual, next edition projected from
   ≥1 prior year's cadence) / **Unconfirmed** (one-off estimate).
@@ -38,7 +41,7 @@ For each event set:
 - `cadence`: human-readable recurrence for recurring events (e.g. "Annual · early May").
 - `city`, `cost`, `access` (Ticketed | Gated: <actual path in>), `url` (official link).
 - `room`: who's actually there — **sourced or "typical profile"; never invented**.
-- `verdict`: one blunt go/skip sentence.
+- `verdict`: ONE short suggestion line (rendered as "Suggestion" at the end of the card) — go/skip + why.
 - `why`: a 3-lens relevance brief `{ isprava, tech, nds }` — one tight clause each:
   **isprava** (luxury RE business: HNI/NRI buyers, development, capital, US expansion),
   **tech** (Isprava Tech: AI/proptech tools, vendors, talent, benchmarking),

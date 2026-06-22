@@ -1,5 +1,15 @@
 # Event Scout — Changelog
 
+## Pass 6 — 2026-06-22 (calendar UI: ★/5 ratings, suggestion-only)
+Reworked the UI per request:
+- **Tiers removed from the UI → ★/5 fit rating** per event (precise half-stars via an overlay meter).
+  Rating derived from tier+shortlist+tone (5 = bullseye … ≤2 = skip); filters are now rating-based
+  (All / 4.5★+ / 4★+ / 3★+ / Hide low). Hero shows avg ★ and count rated 4★+.
+- **No verdict block** — replaced by ONE "Suggestion" line at the very end of each card.
+- **Descriptions kept** — the Isprava / Isprava Tech / NDS "Why it matters" block stays in Details.
+- Removed the personal favorite-star (the Add-to-plan status already tracks personal picks) to avoid
+  two star metaphors. `rating` added to all 54 events and wired into `PIPELINE_PROMPT` for future refreshes.
+
 ## Pass 5 — 2026-06-22 (exhaustive workflow merge: 39 → 54)
 Ran the multi-agent sweep (73 agents, ~1.4M tokens): **82 raw → 65 deduped → 56 verified-and-kept.**
 Merged into the curated set with **token-overlap dedup + a region guard** (so IMN East/West survive but
