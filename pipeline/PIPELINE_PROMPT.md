@@ -59,7 +59,8 @@ For each event set:
 2. **`seed/registry-seed.csv`** — keep in sync (id,name,category,official_url,…,tier,status,confirmed_date,…).
 3. **`CHANGELOG.md`** — append a dated block: new events added, dates that moved, tiers that
    changed, confidence upgrades (Unconfirmed→Confirmed). This is the human-readable diff.
-4. Commit: `git -C ~/event-scout add -A && git commit -m "refresh <date>: <n> events, <k> changes"`.
+4. Commit **and push** (push redeploys the GitHub Pages site automatically):
+   `git -C ~/event-scout add -A && git commit -m "refresh <date>: <n> events, <k> changes" && git -C ~/event-scout push`.
 
 ## Then
 Print a short plain-language summary: what newly cleared the bar, what changed date/tier,
