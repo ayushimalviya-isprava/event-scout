@@ -1,5 +1,14 @@
 # Event Scout — Changelog
 
+## Pass 7 — 2026-06-22 (context-grounded re-rating)
+Re-scored every event independently on NDS's mandate (RE×AI center of gravity, India-US diaspora,
+allocate/co-invest, Isprava US-expansion) **and** the access/peer bar — not the old tier conversion.
+Spread now: **5.0 ×2 · 4.5 ×5 · 4.0 ×5 · 3.5 ×9 · 3.0 ×11 · 2.5 ×9 · 2.0 ×5 · 1.5 ×8** (was 22 piled at 3.5).
+- **5.0** reserved for the two bullseyes: **AI in Real Estate Summit** (RE×AI) and **TiEcon** (diaspora).
+- Notable moves: TED2027 4.5→3.0 (broad, not a domain-peer room); Aspen 3.5→2.5; LeadingRE 2.5→3.5
+  (luxury-RE = Isprava-core); IMN Family Office West/East →4.0 (RE×family-office×UHNW intersection);
+  Allen & Co →2.0 (can't book). GTC/SuperReturn/Sohn/Robin Hood →2.0 (ideas-stage / off-thesis).
+
 ## Pass 6 — 2026-06-22 (calendar UI: ★/5 ratings, suggestion-only)
 Reworked the UI per request:
 - **Tiers removed from the UI → ★/5 fit rating** per event (precise half-stars via an overlay meter).
