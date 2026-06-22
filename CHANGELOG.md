@@ -1,5 +1,47 @@
 # Event Scout — Changelog
 
+## Refresh — 2026-06-22 (3-day pipeline: date re-verification + 2 new events)
+Window: Nov 2026 → Nov 2027. Ran the 5-cluster discovery+verify sweep against official sites.
+Set grows 54 → **56**; verified (Confirmed/Likely from a primary source) 20 → **28**.
+
+**New events added (2):**
+- **Founders Forum North America** (`founders-forum-na-2026`) — **Confirmed Nov 4–5 2026, NYC**.
+  Application-gated, curated founders + partner-level investors. rating 3.5. Near-term, actionable.
+- **IMN AI in Real Estate Forum** (`imn-ai-in-real-estate-2027`) — Predicted ~June 2027, NYC.
+  On the RE×AI bullseye theme; added as a tier-3 monitor pending seniority check. rating 3.0.
+
+**Confidence upgrades (Unconfirmed/Predicted → Confirmed/Likely, with source):**
+- `nar-nxt-27` Unconfirmed → **Confirmed**: Nov 10–15 2027, **San Diego** (was "TBA (US)").
+- `inman-ny-27` Unconfirmed → **Confirmed**: Jan 26–28 2027, NY Hilton Midtown.
+- `ces-27` Likely → **Confirmed** (CTA official); `sxsw-27` Unconfirmed → **Confirmed**: Mar 15–21 2027.
+- `art-basel-miami-26` Likely → **Confirmed** (official site).
+- `fortune-brainstorm-ai-26` Predicted → **Likely**: Dec 7–8 2026, SF (St. Regis).
+- `money2020-27` Unconfirmed → **Likely** (2027 venue move to LVCC confirmed; exact days TBA).
+- Recurring annuals Unconfirmed → **Predicted** (cadence-projected): `milken-27`, `tiecon-27`,
+  `usispf-27`, `aspen-ideas-27`, `all-in-27`, `upfront-27`, `ai4-27`, `the-ai-conf-27`,
+  `allen-co-27`, `cerebral-valley` (Likely → Predicted; no 2026 SF date posted yet).
+
+**Dates / venues that moved:**
+- `prea-annual-27` — **Oct 27–29 2027, Chicago** (Marriott Marquis); confidence → Confirmed (was ~Oct, rotates).
+- `icsc-27` — corrected to **May 24–26 2027** (was May 18–20); → Confirmed.
+- `fortune-bt-27` — **moved Jul → Jun 7–9 2027**, and **Aspen → Park City** (Montage Deer Valley); → Likely.
+- `cretech-ny-27` — re-keyed to ~Oct 2027 (was Nov); Unconfirmed → Predicted.
+
+**Flagged / downgraded:**
+- `salt-ny-27` — **no SALT New York edition has run since 2024; likely discontinued.** tier 2 → 3,
+  rating 3.5 → 2.5, conf Predicted → Unconfirmed, verdict now "Monitor — don't plan around it."
+- `india-ideas-summit-27` (USIBC) — irregular cadence/venue, no forward date published; Predicted → Unconfirmed.
+
+**Surfaced but screened OUT (kept the bar ruthless — set already saturated with capital/AI rooms):**
+- Family-office forums: Family Wealth Report FO Summit (Nov 16 2026 NYC), MFO Summit (Jan 2027 Miami),
+  multiple Markets Group forums — adviser-heavy / duplicative of PERE+iConnections+IMN×4+Opal+GEF.
+- AI rooms: a16z American Dynamism (off-center/defense-policy), Madrona IA Summit, Imagination in Action.
+- Inman Connect Las Vegas / Luxury Connect (residential brokerage, off-mandate); Future PropTech Miami (expo-scale).
+- nasscom US CEO Forum, PanIIT USA (corridor, but no in-window date / overlaps USISPF).
+- LinkedIn/X (cluster 10): no verifiable individual public-post event invite surfaced; the search tool
+  doesn't honor `site:linkedin.com/posts` / `site:x.com` operators — channel unfulfilled this run.
+  Side-event/dinner invites (Cerebral Valley, Milken-week, NY RE Tech Week) don't post until ~6–8 wks out.
+
 ## Pass 8 — 2026-06-22 (production redesign: video hero + premium theme)
 Integrated the requested hero design language and shipped the prod calendar.
 - **Full-screen hero**: looping CloudFront background video with a requestAnimationFrame fade loop
