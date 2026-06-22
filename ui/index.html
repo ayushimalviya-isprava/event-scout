@@ -146,6 +146,7 @@ var TIER_META = {
 var CONF_META = {
   Confirmed:{c:"#34d399",t:"Confirmed"},
   Likely:{c:"#e3b341",t:"Likely"},
+  Predicted:{c:"#8b5cf6",t:"Predicted"},
   Unconfirmed:{c:"#9ca3af",t:"Unconfirmed"}
 };
 var STATUS_CYCLE = ["","interested","booked","skip"];
@@ -250,6 +251,7 @@ function cardHTML(e){
         '<div><span class="k">Who’s in the room · </span><span class="v">'+esc(e.room)+'</span></div>'+
         '<div><span class="k">Access · </span><span class="v">'+esc(e.access)+'</span></div>'+
         '<div><span class="k">Cost · </span><span class="v">'+esc(e.cost)+'</span></div>'+
+        (e.cadence?'<div><span class="k">Cadence · </span><span class="v">'+esc(e.cadence)+'</span></div>':'')+
       '</div>'+
       '<div class="cfoot"><div>'+
         '<button class="lbtn" data-act="details" data-id="'+e.id+'">'+(open?'Less':'Details')+'</button>'+

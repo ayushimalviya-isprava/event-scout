@@ -1,5 +1,26 @@
 # Event Scout — Changelog
 
+## Pass 3 — 2026-06-22 (Predictive layer + CEO/UHNW breadth)
+Added a **`Predicted`** confidence level (violet) + a **cadence** field to the model — for
+reliably-recurring annuals projected into the window from historical pattern, distinct from a
+one-off `Unconfirmed` guess. UI updated (new dot color + Cadence line in details).
+
+**+10 events → 39 total (0 out of window).** New, all CEO/UHNW-grade per the objective:
+- **CREfC Miami** — Confirmed Jan 5–8 2027, Loews Miami Beach (CRE finance). Tier 2.
+- **FII PRIORITY Miami** — Predicted ~late Feb 2027 (2026 was Feb 25–27, Faena); PIF/sovereign
+  capital + CEOs + AI agenda. **Tier 1.**
+- **SALT (SkyBridge) NY** — Predicted ~Sept 2027 (alts/UHNW, Scaramucci). Tier 2.
+- **Sohn Investment Conference NY** — Predicted ~mid-May 2027 (2026 was May 12). Tier 3 (stage, not networking).
+- **Greenwich Economic Forum** — Predicted ~early Oct 2027 (2026 was Oct 8–9; family offices). Tier 2.
+- **AI Engineer World's Fair** — Predicted ~late June 2027 (2026 was Jun 29–Jul 2). Tier 2.
+- **Fortune Brainstorm AI** — Predicted ~early Dec 2026. Tier 2.
+- **India Ideas Summit (USIBC)** — Predicted ~2027 (corridor/diaspora). Tier 2.
+- **PREA Institutional Investor Conference** — Predicted ~Oct 2027 (institutional RE allocators). Tier 2.
+- **Art Basel Miami Beach** — Likely Dec 3–6 2026 (UHNW/collector gathering). Tier 3.
+
+Verified this pass via official sites / press: CREfC, FII, Sohn, SALT, GEF (sources in commit).
+Still pending: the exhaustive past-2-years all-source sweep (proposed as a workflow).
+
 ## Pass 2 — 2026-06-22 (RE×AI cluster · gated path-ins · LinkedIn/X)
 **LinkedIn & X added as sources** — public-post discovery scoped to `linkedin.com` / `x.com`,
 wired into `keywords.md` (cluster 10) and `PIPELINE_PROMPT.md`. Public posts only (no logged-in
