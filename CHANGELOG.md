@@ -1,5 +1,83 @@
 # Event Scout — Changelog
 
+## Refresh — 2026-09-18 (3-day pipeline: 10 date upgrades + 2 new events + 3 downgrades)
+Window: Nov 2026 → Nov 2027. Ran the full DISCOVER→VERIFY sweep (3 parallel research passes
+covering RE×AI/proptech, diaspora+AI-frontier+LinkedIn/X, and capital/expansion/gated clusters)
+against official sites. Set grows 56 → **58**; verified (Confirmed/Likely from a primary source)
+28 → **38**.
+
+**New events added (2):**
+- **CREDA AI in CRE Thought Leadership Summit** (`creda-ai-cre-summit-2026`) — **Confirmed
+  Nov 18–19 2026, Cambridge MA**. Application-gated ~100-person RE×AI room, MIT Center for Real
+  Estate facilitation, named firms (Suffolk, RXR, Newmark). rating 4.5, **added to shortlist**
+  (replaces AI in Real Estate Summit — see downgrades below). Near-term, actionable.
+- **PREA CEO Leadership Forum** (`prea-ceo-leadership-forum-2027`) — Confirmed Mar 17 2027,
+  San Diego. Invite-only CEO-level institutional-allocator room; access path via PREA network
+  unverified. rating 3.5, tier 2, monitor-not-shortlisted pending access confirmation.
+
+**Confidence upgrades (10, all with primary-source dates):**
+- `cerebral-valley` Predicted → **Confirmed**: Nov 12 2026 SF date now posted (was TBA).
+- `fortune-brainstorm-ai-26` Likely → **Confirmed** (Fortune site confirms Dec 7–8 2026).
+- `uli-spring-27` Likely → **Confirmed**, date corrected: **May 11–13 2027, Seattle** (was ~May 18).
+- `uli-fall-27` Unconfirmed → **Likely**: city+date now known — **Oct 18–20 2027, Philadelphia**
+  (was "TBA (US)").
+- `sohn-ny-27` Predicted → **Confirmed**: **May 18 2027** (was ~May 11).
+- `all-in-27` Predicted → **Confirmed**: **Sep 12–14 2027, The Shrine LA** (was ~Sep 7).
+- `money2020-27` Likely → **Confirmed**: **Oct 19–21 2027**, LVCC + Resorts World (was ~Oct 25).
+- `milken-27` Predicted → **Confirmed**: **May 2–5 2027, Beverly Hilton** (was generic "LA").
+- `fortune-bt-27` Likely → **Confirmed** (Park City dates now on official Fortune site).
+- `ai-engineer-wf-27` Predicted → **Confirmed**: **Jun 29–Jul 2 2027, Moscone West SF**.
+- `ai4-27` Predicted → **Confirmed**: **Aug 2–5 2027, The Venetian** (was ~Aug 10).
+
+**Resolved (was flagged discontinued, turns out rebranded):**
+- `salt-ny-27` — **SALT New York is not discontinued; it rebranded to Global Alts New York**
+  under the iConnections/MFA franchise (same organizer as `iconnections-27`'s Miami event).
+  Confirmed **Jun 8–9 2027, The Glasshouse NYC**. tier 3→2, rating 2.5→3.5, conf → Confirmed,
+  URL updated to iconnections.io.
+
+**Downgrades (3 — ruthless filter working as intended):**
+- `ai-real-estate-summit` (AI in Real Estate Summit) — **tier 1→2, rating 5.0→3.5, removed
+  from shortlist.** 2026 edition ran as open Eventbrite registration, ~300 attendees leaning
+  startup/demo mix — not the curated C-suite room the prior listing assumed. Re-verify
+  seniority before ever committing time to this one again.
+- `imn-ai-in-real-estate-2027` — **downgraded to Watch, conf → Unconfirmed, rating 3→2.** The
+  official IMN URL for this event now redirects to an unrelated "Mortgage AI" listing (Oct 2026,
+  Dana Point). Likely discontinued or rebranded — recheck next cycle before removing outright.
+- `indiaspora-us-convening-2027` — **conf → Unconfirmed, rating 2.5→2.** Indiaspora's 2026
+  flagship forum and AI Summit both relocated to Bengaluru, India. No confirmed US flagship
+  convening found for this window; only a smaller members-only retreat (Santa Fe, Oct 2026)
+  surfaced.
+
+**Other corrections:**
+- `fii-priority-miami-27` — date pattern has slipped later each year (Feb'24→Feb'25→Mar'26);
+  revised prediction from ~Feb 24 to **~Mar 25 2027**, still TBA/Predicted.
+- `imn-re-family-office-west-2027` — enriched room detail: VIP closed-door "Co-investing &
+  club deals" session, Starwood Capital SVP + CEO-level RE fund principals, 50+ allocators
+  (sourced). Note: a separate "Informa Connect Family Office West" lead surfaced during
+  research turned out to be this same event (IMN was acquired by Informa) — not a new listing.
+- `leadingre-conference-week-2027` — venue now known: Wynn Las Vegas (still Likely, secondary
+  sources only).
+- `confluence-2027-silicon-valley` — registration now open (~$495–895 founding rate); confirmed
+  tracks include a Capital Forum and a "Build India × Silicon Valley" corridor track, but no
+  real-estate track and still no named speakers.
+
+**Surfaced but screened OUT (kept the bar ruthless):**
+- Family-office/capital: GFOIS/Ritossa (pay-to-play, flagged in a 2022 Vanity Fair investigation),
+  BxR branded-residences conference (date unconfirmable), CRETI Venture Summit (investor/fund
+  audience not RE principals, out-of-window anyway).
+- Real estate: T3 Leadership Summit (wrong vertical — residential brokerage/MLS execs), Montgomery
+  Summit (1,200+ attendees, too large), Luxury Commercial RE Summit NYC (pay-to-play framing,
+  no 2027 date yet — recheck), NAR iOi Summit (discontinued, folded into NAR NXT "Pitch Battle"),
+  MetaProp NYC dinners (unverifiable, no forward date), Bisnow "AI in CRE" (no distinct event found).
+- Diaspora/AI: a16z American Dynamism Summit (no RE adjacency, no 2027 date — monitor), TiECON
+  East 2026 (falls before window, recheck for 2027), Indiaspora AI Summit (Bengaluru, out of
+  geographic scope), India Philanthropy Forum NY (no RE/AI/capital adjacency), PTTOW! (wrong
+  domain — CMOs not RE/AI/capital).
+- LinkedIn/X (cluster 10): plain-keyword search surfaced a real, active AI-founder-dinner circuit
+  in SF/NYC (e.g. Andrew Yeung's dinner series, YC/a16z Speedrun NYC dinners) — genuine signal
+  that informal AI dinners are happening, but these are invite-by-DM with no official site or
+  forward date, so per the verification rule they can't become a listed candidate this cycle.
+
 ## Refresh — 2026-06-22 (3-day pipeline: date re-verification + 2 new events)
 Window: Nov 2026 → Nov 2027. Ran the 5-cluster discovery+verify sweep against official sites.
 Set grows 54 → **56**; verified (Confirmed/Likely from a primary source) 20 → **28**.
