@@ -1,5 +1,82 @@
 # Event Scout — Changelog
 
+## Refresh — 2026-10-01 (3-day pipeline: 4 confidence upgrades + 2 new + 1 removed + 2 downgrades)
+Window: Nov 2026 → Nov 2027. Three parallel research passes (RE/capital Predicted events;
+AI/diaspora Predicted events + LinkedIn/X; near-term re-verify + side events + capital discovery),
+checked against official sites. Set 58 → **59**; verified (Confirmed/Likely) 38 → **41**.
+No `grok-leads.json` this run (XAI_API_KEY unset).
+
+**New events added (2):**
+- **Semafor Silicon Valley & The World** (`semafor-svw-2026`): first edition, **Nov 2026**
+  per semafor.com, invite-only. A secondary source says Nov 5, so it's listed as Likely + TBA.
+  The advisory board is co-chaired by Nadella, Huang, Porat, Su and Makan; the board is not a
+  confirmed attendee list. Rating 3.5, tier 2. Clashes with Founders Forum and PERE (Nov 4–5).
+- **Bisnow New York AI & Technology** (`bisnow-ny-ai-tech-2027`): Predicted ~mid-May 2027
+  (2026 was May 13, 7 WTC). Half-day event with named NYC RE CTO/CDO speakers. Rating 3,
+  tier 3. Worth slotting into a May NY trip, not a reason to fly.
+
+**Dates moved:**
+- `blueprint-27`: **moved from ~Sep 21 to Oct 26–28 2027**, The Venetian. Predicted → **Confirmed**
+  (blueprintvegas.com). Still shortlisted.
+- `art-basel-miami-26`: corrected to **Dec 4–6** public days; VIP days are Dec 2–3 (we had Dec 3–6).
+- `gef-27`: 2026 actually ran Oct 5–7, not Oct 8–9, so the 2027 prediction moves to ~Oct 4.
+- `aspen-ideas-27`: re-projected to ~Jun 24–30 (2026 ran Jun 25–Jul 1).
+- `fii-priority-miami-27`: 2026 was Mar 25–27 (three days), so the end date was added. Still Predicted.
+
+**Confidence upgrades (4):**
+- `uli-fall-27` Likely → **Confirmed** (Oct 18–20 2027, Philadelphia; fall.uli.org/future-meetings).
+- `leadingre-conference-week-2027` Likely → **Confirmed**: Mar 22–24 2027, Wynn Las Vegas. Now
+  branded **LeadingRE LIMITLESS**; URL updated to leadingrelimitless.com.
+- `upfront-27` Predicted → **Likely**: organizer confirms Feb 2027 in LA; exact dates still TBA.
+- `blueprint-27` (see above).
+
+**Venue/detail changes:**
+- `superreturn-north-america-miami-2027`: **venue moved** to Signia by Hilton Diplomat, Hollywood FL
+  (was JW Marriott Miami). Free LP pass and closed-door sessions for single family offices noted.
+- `humanx-27`: venue is Mandalay Bay. `sohn-ny-27`: venue is Jazz at Lincoln Center (secondary source).
+- `creda-ai-cre-summit-2026`: $499. **Full refund until Oct 27; money forfeited from Nov 9.**
+  Seats still being reviewed, members get priority.
+- `cerebral-valley`: GA $1,299 / founder $199; apply at reg.newcomer.events/cvai8. No deadline posted.
+- `cretech-ny-27`: invite-only owner/developer "TableTalks" roundtables noted (new in 2026).
+
+**Removed (1):**
+- `imn-ai-in-real-estate-2027` (IMN AI in Real Estate Forum): **removed as dead.** The URL now opens
+  a generic IMN listing, the agenda page returns 404, and the last edition was Jun 25 2025, with no
+  2026 or 2027 edition. It was flagged Watch last cycle. **If you starred it, the star is orphaned.**
+
+**Downgrades (2):**
+- `single-family-office-summit-2027-nyc`: rating 3 → **2**, verdict Skip. It's run by Family
+  Office Club on a paid-membership model ($1,450–10k tiers), the same pay-to-play profile as
+  GFOIS, which we screened out.
+- `india-ideas-summit-27`: rating 3 → 2.5. No 2026 edition found and no forward date.
+- (`indiaspora-us-convening-2027`: verdict reworded to *dormant*. The last US Forum was SF, Oct 2025.
+  Rating unchanged at 2.)
+
+**Reconfirmed unchanged (official sites):** PERE America, Founders Forum NA, Nareit REITworld,
+CREfC Miami, IMN Laguna, NMHC (hotel deposit forfeited if cancelled after Dec 11), iConnections
+Miami (hotel block closes Jan 15), RETCON, PREA CEO Forum, Future Proof, HumanX, Fortune Brainstorm
+AI, TED, Confluence (still no named speakers and no RE track).
+
+**Still Predicted (no 2027 date posted yet):** TiEcon, Sequoia AI Ascent, The AI Conference
+(2026 edition running now), USISPF, Allen & Co, Forbes Iconoclast, AI in Real Estate Summit,
+Opal Newport, IMN FO East, Robin Hood, CREtech NY, FII PRIORITY.
+Note: one aggregator lists Milken 2027 as Apr 26–29, which conflicts with the May 2–5 we
+confirmed last cycle. Kept May 2–5; recheck next pass.
+
+**Surfaced but screened OUT:**
+- NYT DealBook Summit (Nov 18, Likely): invite-only by NYT, little AI or RE focus, clashes with CREDA.
+- Campden North American Family Office Forum (Nov 18–19, Palm Beach): open only to family
+  principals, so NDS realistically can't get in except via sponsorship; also clashes with CREDA.
+- Axios AI+SF (Dec 3): short and fine if already in SF, not worth listing.
+- Inman Luxury Connect (Jul 26–27 2027, San Diego) and Luxury RE & Design Summit (NYC, Oct):
+  for agents and brokers, not principals.
+- DC Finance Florida FO conference, Prestel & Partner LA, MFO Summit, WM EDGE UHNW, AAHOA:
+  pay-to-pitch, advisor-heavy, or the wrong audience.
+- No verifiable side events or dinners posted yet for Cerebral Valley, NMHC, iConnections, Art
+  Basel or Milken. That's early; re-sweep ~6 weeks before each event.
+- Competitor intel, not events: SOBHA is running NRI property expos in Frisco TX and Santa Clara
+  (Oct 2026), a sign of demand for Indian property among US-based NRIs.
+
 ## Refresh — 2026-09-18 (3-day pipeline: 10 date upgrades + 2 new events + 3 downgrades)
 Window: Nov 2026 → Nov 2027. Ran the full DISCOVER→VERIFY sweep (3 parallel research passes
 covering RE×AI/proptech, diaspora+AI-frontier+LinkedIn/X, and capital/expansion/gated clusters)
