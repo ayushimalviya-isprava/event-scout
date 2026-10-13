@@ -1,5 +1,56 @@
 # Event Scout — Changelog
 
+## Refresh — 2026-10-13 (3-day pipeline: 3 new + 1 downgrade + corrections)
+Window: Nov 2026 → Nov 2027. Three parallel passes (near-term re-verify + side events; 2027
+Predicted → announced; new-event discovery incl. LinkedIn/X), spot-checked on official sites.
+Set 59 → **62**; verified (Confirmed/Likely) 41 → **44**. No `grok-leads.json` (XAI_API_KEY unset).
+LinkedIn/X site-scoped searches returned no usable leads this run.
+
+**New events added (3):**
+- **Nareit REITworld 2027** (`nareit-reitworld-27`): **Confirmed Nov 15–18 2027**, The Diplomat
+  Beach Resort, Hollywood FL (reit.com). Same 1:1 REIT C-suite format as the 2026 Atlanta edition.
+  Rating 3.5, tier 2.
+- **BxR (Brand x Residential) at NYU IHIF** (`bxr-nyu-ihif-2027`): IHIF is **Confirmed Jun 6–8 2027**,
+  NY Marriott Marquis (Questex). The BxR programme inside it is **Likely**, since it ran in 2025 and 2026.
+  It's the only dedicated US branded-residences room. Rating 3, tier 3.
+- **The Luxury Summit at The Boca Raton** (`luxury-summit-boca-2027`): **Confirmed Apr 25–27 2027**.
+  Invite-only and inaugural, with no speakers named yet. Rating 2.5 (monitor), tier 3.
+
+**Dates / confidence changed:**
+- `semafor-svw-2026`: the **Nov 5 date has been removed**. No source supports it, and the official
+  pages say only "November 2026", so it's now listed as Nov 2026 TBA (Likely). Co-chairs (now
+  including Sam Altman) and the 350+ target size come from the apply page.
+- `money2020-27`: Confirmed → **Likely**. The Oct 19–21 dates come only from an aggregator; the
+  LVCC + Resorts World venue move is official.
+- `robin-hood-investors-conference-2027`: re-projected to a **single day, ~Oct 20 2027**.
+  2026 was one day, Oct 21, at Spring Studios.
+- `gef-27`: end date added (~Oct 4–6), following the 2026 pattern of Oct 5–7.
+
+**Re-verified / detail added:**
+- `milken-27`: **May 2–5 2027 confirmed** from Milken's official future-dates list. The
+  aggregator's Apr 26–29 was wrong. The Beverly Hilton venue comes from a secondary source only.
+- `creda-ai-cre-summit-2026`: official page re-checked. **Correction:** cancelling after Oct 27
+  costs a **$100 fee** (it isn't the end of refunds); the fee is forfeited after Nov 9. Applicants
+  who aren't approved get a full refund.
+- `pere-america-26`: venue is Convene, 360 Madison Ave. `cerebral-valley`: speakers confirmed as
+  Amodei, Ghodsi and Arora; a $2,999 services/BD tier was added; the venue goes to registrants only.
+- `iconnections-27`: Miami Beach Convention Center. Allocators attend free if they commit to
+  15 meetings. Keynotes are Klarman, Marks, Sternlicht, Ross and Bass. The anchor hotel is the
+  Ritz-Carlton South Beach, and the Jan 15 block deadline still applies.
+- `crefc-miami-27`: Loews isn't confirmed as the 2027 venue, so it's now listed as "venue TBA".
+- `superreturn-north-america-miami-2027`: 800+ attendees expected, including 250+ LPs.
+- `art-basel-miami-26`: the VIP days (Dec 2–3) come from secondary sources and are marked as such.
+- Still Predicted, with no 2027 announcement: TiEcon, CREtech NY (the 2026 edition is Oct 20–21),
+  AI in Real Estate Summit, FII Priority, Upfront (exact dates), GEF and Robin Hood.
+
+**Screened out this pass:** Nareit REITweek (Jun 7–10 2027; public-REIT investor format),
+Bloomberg Invest NY, BuiltWorlds AI/ML (vendor-heavy), Inman Luxury Connect (agents),
+AAHOACON (trade show), Harvard India Conf (student-run), Florida Family Office & HNW Conf
+(Dec 2, Art Basel week; paid DC Finance format).
+
+**Housekeeping:** `seed/registry-seed.csv` was regenerated from events.js, which fixed two rows with
+malformed quoting (`sequoia-ai-ascent-2027`, `cretech-ny-27`).
+
 ## Refresh — 2026-10-01 (3-day pipeline: 4 confidence upgrades + 2 new + 1 removed + 2 downgrades)
 Window: Nov 2026 → Nov 2027. Three parallel research passes (RE/capital Predicted events;
 AI/diaspora Predicted events + LinkedIn/X; near-term re-verify + side events + capital discovery),
