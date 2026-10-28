@@ -1,5 +1,36 @@
 # Event Scout — Changelog
 
+## Refresh — 2026-10-28 (3-day pipeline: 2 confidence upgrades, 0 new)
+Window: Nov 2026 → Nov 2027. Set stays at **62**; verified (Confirmed/Likely) 44 → **46**.
+No `grok-leads.json` (XAI_API_KEY unset). LinkedIn/X site-scoped searches found no usable leads again.
+
+**Confidence upgrades (2):**
+- `cretech-ny-27`: Predicted → **Confirmed Oct 20–21 2027**, Javits Center Hall 1B (cretech.com).
+  Rating unchanged at 2.5 (monitor). It falls in the same week as PREA (Chicago) and Blueprint (Vegas).
+- `indiaspora-us-convening-2027`: the dormant "US Convening" placeholder (Unconfirmed, ~Oct 2027 SF)
+  now resolves to **The Indiaspora Forum, Confirmed Apr 18–20 2027, Napa Valley**
+  (forum.indiaspora.org). It's invite-only with about 250 Indian-origin leaders. The id is kept and
+  the entry renamed. **Tier 3 → 2, rating 2 → 3.5.** It overlaps Sequoia AI Ascent (~Apr 19, Predicted).
+
+**Re-verified on official sites (no change):** Cerebral Valley (Nov 12, SF; no deadline posted),
+Founders Forum NA (Nov 4–5, NYC), Fortune Brainstorm AI (Dec 7–8, St. Regis SF, invite-only, $3,500).
+`creda-ai-cre-summit-2026`: the suggestion now reflects that the Oct 27 point has passed, so cancelling costs $100 and the fee is forfeited from Nov 9.
+
+**Still Predicted / no 2027 announcement:** TiEcon (tiecon.org still shows 2026), AI in Real
+Estate Summit, FII Priority Miami, Upfront (LA confirmed, dates not), GEF, Robin Hood.
+Semafor SVW is still "November 2026" with no day or venue on semafor.com/events.
+
+**Screened out this pass:** EarthX Family Office Summit (Dallas, Apr 2027; invite-only, $100M+,
+but sustainability/conservation-focused with no RE angle). Propy Summit (Miami, Feb; crypto/Web3-heavy
+and no 2027 date). AI & Housing Summit Atlanta (Feb 2027; promotional "$45K/month" framing).
+Founderpath AI Growth Summit and Napa VIP retreat (SaaS-founder audience). ICSC+PROPTECH (inside
+ICSC Vegas; no 2027 date). Section AI "RE with AI in 2027" webinar. Florida Family Office
+Art Basel side events (unverified 2026 dates, pay-to-play format). CREtech Future of Technology
+Summit (the page is a past 2024 edition).
+
+**Housekeeping:** events.js is now sorted by start date, because the Indiaspora entry moved from
+Oct to Apr. The registry CSV was regenerated and `last_checked` bumped to 2026-10-28 on all rows.
+
 ## Refresh — 2026-10-13 (3-day pipeline: 3 new + 1 downgrade + corrections)
 Window: Nov 2026 → Nov 2027. Three parallel passes (near-term re-verify + side events; 2027
 Predicted → announced; new-event discovery incl. LinkedIn/X), spot-checked on official sites.
