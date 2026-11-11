@@ -1,5 +1,62 @@
 # Event Scout — Changelog
 
+## Refresh — 2026-11-11 (3-day pipeline: 3 past removed, 3 confidence upgrades, corrections, 0 new)
+Window: Nov 2026 → Nov 2027. Set 62 → **59**; verified (Confirmed/Likely) stays at **46**. The three
+removed events were all Confirmed, and three others were upgraded. No `grok-leads.json` (XAI_API_KEY unset).
+The three parallel research agents were cut off before reporting. Their fetched results were recovered
+from the transcripts, and the gaps were checked inline.
+
+**Removed: past editions (3).** These have now happened. Anyone who starred them will no longer see
+them in the UI:
+- `founders-forum-na-2026` (Nov 4–5, NYC), `pere-america-26` (Nov 4–5, NYC), `nar-nxt-26` (New Orleans;
+  NAR's coverage shows it ran Nov 5–9). None has a 2027 entry yet. Re-add them when 2027 dates are published:
+  FF NA ~autumn, PERE America ~Nov, NAR NXT 2027 is already tracked.
+
+**Confidence upgrades / dates moved:**
+- `aspen-ideas-27`: Predicted → **Confirmed Jun 25–Jul 1 2027** (aspenideas.org; Festival 1 Jun 25–28,
+  Festival 2 Jun 28–Jul 1). The start moved by a day.
+- `the-ai-conf-27`: Predicted ~Sep 28 → **Confirmed Oct 12–14 2027**, SF (aiconference.com save-the-date;
+  venue TBA). Moved two weeks later, after GEF.
+- `money2020-27`: Likely → **Confirmed Oct 19–21 2027**. us.money2020.com now states the dates and the
+  move to LVCC + Resorts World.
+- `imn-re-family-office-east-2027`: Predicted → **Likely**. The official page says "October 2027, Coral
+  Gables, venue TBA", but no days yet.
+
+**Corrections / detail:**
+- `creda-ai-cre-summit-2026`: **registration is complimentary** (the official page says so twice), not the
+  $499 listed before. It's still approval-based, and the $100/forfeit cancellation wording only matters for a
+  paid registration. Main summit Thu Nov 19; MIT walking lecture and reception Wed Nov 18.
+- `crefc-miami-27`: the venue is now **Loews Miami Beach Hotel** (CREFC event page, JAN_27).
+- `imn-re-family-office-west-2027`: venue added (Waldorf Astoria Monarch Beach, Dana Point). Its `url` was
+  pointing at the *East* page and has been fixed to informaconnect.com/family-office-west.
+- `confluence-2027-silicon-valley`: an official site was found (confluence2027.org), confirming Apr 9–11, San Jose
+  Civic Theater. The url has been swapped from the press release.
+- `cerebral-valley`: re-verified for Thu Nov 12 (tomorrow). Applications still show open. Next run will
+  drop it as past.
+- `semafor-svw-2026`: still "November 2026" with no day or venue on semafor.com/events or the apply page.
+
+**Re-verified, no change:** Nareit REITworld (Nov 16–19, Atlanta Marriott Marquis), Art Basel MB (Dec 4–6),
+NMHC (Jan 26–28, ARIA), iConnections Miami (Feb 22–25; hotel blocks close **Jan 15 2027**), Milken (2–5 May
+2027 on the official page; 2027 venue not stated), Sohn NY (May 18 2027), Upfront (official: "back for 2027",
+LA, invite-only, no dates). Fortune Brainstorm AI's official pages returned errors, so the Dec 7–8 listing stands.
+
+**Still Predicted / nothing announced:** TiEcon (tiecon.org shows only 2026), AI in Real Estate Summit
+(page still shows Jun 4 2026), FII Priority Miami (site 403), Sequoia AI Ascent, USISPF (no 2027 summit on the
+upcoming page), India Ideas Summit, GEF (thegeforum.com lists only Singapore Mar 2027), Robin Hood (still
+shows Oct 21 2026), SFO Summit (still 2026 page), Bisnow NY AI (no 2027 AI event on the NY calendar),
+Forbes Iconoclast, Opal Newport, Allen & Co.
+
+**Screened out this pass:**
+- Goodwin "Unstable Foundations" RE-tech forum (SF Tech Week; 2nd annual edition was Oct 6 2026). It's on theme,
+  but the speakers are mostly director, VC and advisor level, it's run as law-firm marketing, and it has no principal density.
+- PEI NEXUS 2027 (Mar 1–4, Fairmont Scottsdale): a GP/LP private-markets fundraising room, and NDS isn't raising.
+- Commercial Observer AI & Innovation Forum: the next edition is a Zoom webinar (Nov 18 2026), with no in-person 2027 date.
+- Art Basel side events: FOIS "Family Office & Investors Summit" dinners on lu.ma are pay-to-play, and the
+  page gives conflicting dates. Miami Finance Forum Alts2Arts (Dec 1, Brickell) is a fund-manager mixer.
+- TiECON East (TiE Boston): 2026 was Oct 2, Burlington MA. No 2027 date, and it's suburban. Monitor only.
+- HousingWire AI Summit and Section AI "RE with AI in 2027": both are agent-focused or webinars.
+- LinkedIn/X site-scoped searches again turned up no usable US leads (only Future PropTech Singapore 2027).
+
 ## Refresh — 2026-10-28 (3-day pipeline: 2 confidence upgrades, 0 new)
 Window: Nov 2026 → Nov 2027. Set stays at **62**; verified (Confirmed/Likely) 44 → **46**.
 No `grok-leads.json` (XAI_API_KEY unset). LinkedIn/X site-scoped searches found no usable leads again.
